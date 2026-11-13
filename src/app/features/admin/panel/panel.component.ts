@@ -72,7 +72,7 @@ import { PageHeadingComponent } from '../../../shared/page-heading/page-heading.
       &:hover,
       &:focus-visible {
         transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgb(10 38 71 / 14%);
+        box-shadow: 0 10px 24px rgb(15 59 120 / 14%);
       }
 
       h2 {

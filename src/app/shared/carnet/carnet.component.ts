@@ -196,7 +196,7 @@ export class CarnetComponent {
 
   async #generarQr(url: string): Promise<void> {
     const { toDataURL } = await import('qrcode');
-    const imagen = await toDataURL(url, { margin: 0, width: 200, color: { dark: '#0a2647', light: '#ffffff' } });
+    const imagen = await toDataURL(url, { margin: 0, width: 200, color: { dark: '#0f3b78', light: '#ffffff' } });
     if (this.url() === url) {
       this.qr.set(imagen);
     }

@@ -65,7 +65,7 @@ export function horaLegible(hora: string): string {
   return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${sufijo}`;
 }
 
-const COLORES = ['#1d4f91', '#0f766e', '#b45309', '#7c3aed', '#be123c', '#0369a1', '#4d7c0f', '#a21caf', '#c2410c', '#0e7490', '#475569'];
+const COLORES = ['#1a5fb4', '#0f766e', '#b45309', '#7c3aed', '#be123c', '#0369a1', '#4d7c0f', '#a21caf', '#c2410c', '#0e7490', '#475569'];
 
 /** Color estable por clave (curso o asignatura) para distinguir las clases en el calendario. */
 export function colorDe(clave: string): string {

@@ -12,8 +12,8 @@ export interface EstiloCategoria {
 }
 
 export const ESTILOS_CATEGORIA: Readonly<Record<CategoriaNoticia, EstiloCategoria>> = {
-  Institucional: { etiqueta: 'Institucional', icono: 'account_balance', color: '#0a2647', fondo: '#e7edf7' },
-  Academica: { etiqueta: 'Académica', icono: 'school', color: '#1d4f91', fondo: '#dde7fb' },
+  Institucional: { etiqueta: 'Institucional', icono: 'account_balance', color: '#0f3b78', fondo: '#e7edf7' },
+  Academica: { etiqueta: 'Académica', icono: 'school', color: '#1a5fb4', fondo: '#dde7fb' },
   Cultural: { etiqueta: 'Cultural', icono: 'theater_comedy', color: '#9b1c2c', fondo: '#fde2e4' },
   Deportiva: { etiqueta: 'Deportiva', icono: 'sports_soccer', color: '#1e6b37', fondo: '#e3f4e8' },
   Evento: { etiqueta: 'Evento', icono: 'event', color: '#7a5200', fondo: '#fff3c4' },
@@ -23,7 +23,7 @@ export const ESTILOS_CATEGORIA: Readonly<Record<CategoriaNoticia, EstiloCategori
 export const ESTILO_CATEGORIA_POR_DEFECTO: EstiloCategoria = {
   etiqueta: 'Noticia',
   icono: 'article',
-  color: '#0a2647',
+  color: '#0f3b78',
   fondo: '#e7edf7',
 };
 

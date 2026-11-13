@@ -2,8 +2,8 @@
 
 // =====================================================================
 //  Tema de Angular Material 19 (Material 3) + identidad visual
-//  de la I.E. Rabí Gamaliel. PROVISIONAL: se conservan azul marino, amarillo y rojo
-//  hasta recibir los colores institucionales (cambiarlos en las variables --rg-*).
+//  de Rabí Gamaliel, tomada del escudo oficial: azul (cinta y globo) y dorado (laurel).
+//  Si la institución define códigos oficiales, cambiarlos en las variables --rg-*.
 // =====================================================================
 
 html {
@@ -36,10 +36,10 @@ html {
 
 // ---- Tokens de diseño institucionales (usados por todos los componentes) ----
 :root {
-  --rg-azul: #0a2647;
-  --rg-azul-oscuro: #06182e;
-  --rg-azul-medio: #1d4f91;
-  --rg-amarillo: #ffc700;
+  --rg-azul: #0f3b78;
+  --rg-azul-oscuro: #0a2550;
+  --rg-azul-medio: #1a5fb4;
+  --rg-amarillo: #dfa941;
   --rg-rojo: #d7263d;
   --rg-naranja: #d97706;
   --rg-fondo: #f4f5f9;
@@ -49,7 +49,7 @@ html {
   --rg-texto: #1b2a41;
   --rg-texto-suave: #5b6577;
   --rg-radio: 10px;
-  --rg-sombra: 0 1px 2px rgb(10 38 71 / 6%), 0 6px 18px rgb(10 38 71 / 6%);
+  --rg-sombra: 0 1px 2px rgb(15 59 120 / 6%), 0 6px 18px rgb(15 59 120 / 6%);
   --rg-fuente-titulos: 'Montserrat', sans-serif;
   --rg-fuente-texto: 'Plus Jakarta Sans', sans-serif;
   --rg-ancho-maximo: 1400px;
