@@ -1,0 +1,125 @@
+:host {
+  display: block;
+  // Franja superior con el color de la categoría.
+  border-top: 6px solid var(--color-categoria);
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.75rem 0 1.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--fondo-categoria);
+  color: var(--color-categoria);
+  font: 700 0.78rem / 1.2 var(--rg-fuente-titulos);
+  text-transform: uppercase;
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+}
+
+.cerrar-x {
+  color: var(--rg-texto-suave);
+}
+
+h2[mat-dialog-title] {
+  font: 700 1.35rem / 1.3 var(--rg-fuente-titulos);
+  color: var(--rg-azul);
+  padding-block-start: 0.5rem;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  color: var(--rg-texto-suave);
+  font-size: 0.9rem;
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+    color: var(--color-categoria);
+  }
+}
+
+.marco-imagen {
+  margin: 0 0 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--rg-superficie-suave);
+
+  // Mientras carga: marcador animado con la proporción típica de una foto.
+  &.cargando {
+    aspect-ratio: 16 / 9;
+    max-block-size: 320px;
+    background: linear-gradient(90deg, #eef1f6 25%, #f7f9fc 50%, #eef1f6 75%) 0 0 / 200% 100%;
+    animation: brillo 1.2s linear infinite;
+
+    .imagen {
+      opacity: 0;
+    }
+  }
+}
+
+// `contain` muestra la imagen completa sin recortarla: sirve para fotos horizontales
+// y también para afiches o infografías verticales.
+.imagen {
+  display: block;
+  inline-size: 100%;
+  max-block-size: min(60dvh, 520px);
+  object-fit: contain;
+  transition: opacity 200ms ease;
+}
+
+// Reproductor de YouTube: 16:9 para videos normales, 9:16 (centrado y más angosto) para Shorts.
+.marco-video {
+  margin: 0 0 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+
+  &.vertical {
+    aspect-ratio: 9 / 16;
+    inline-size: min(100%, 320px);
+    margin-inline: auto;
+  }
+
+  iframe {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    border: 0;
+  }
+}
+
+@keyframes brillo {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.resumen {
+  font-weight: 600;
+  color: var(--rg-texto);
+  border-left: 4px solid var(--color-categoria);
+  padding-inline-start: 0.75rem;
+}
+
+p {
+  color: var(--rg-texto);
+  line-height: 1.65;
+}

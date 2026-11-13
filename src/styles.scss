@@ -1,0 +1,301 @@
+@use '@angular/material' as mat;
+
+// =====================================================================
+//  Tema de Angular Material 19 (Material 3) + identidad visual
+//  de la I.E. Rabí Gamaliel. PROVISIONAL: se conservan azul marino, amarillo y rojo
+//  hasta recibir los colores institucionales (cambiarlos en las variables --rg-*).
+// =====================================================================
+
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$yellow-palette,
+      theme-type: light,
+    ),
+    typography: (
+      brand-family: 'Montserrat, sans-serif',
+      plain-family: '"Plus Jakarta Sans", sans-serif',
+    ),
+    density: 0,
+  ));
+
+  // Ajuste fino de los tokens de sistema de Material a los colores institucionales.
+  // (Envuelto en `& {}` para que Sass lo emita después de las variables generadas por mat.theme.)
+  & {
+    --mat-sys-primary: var(--rg-azul);
+    --mat-sys-on-primary: #ffffff;
+    --mat-sys-primary-container: #dbe6f6;
+    --mat-sys-on-primary-container: var(--rg-azul);
+    --mat-sys-surface: var(--rg-superficie);
+    --mat-sys-background: var(--rg-fondo);
+  }
+}
+
+// ---- Tokens de diseño institucionales (usados por todos los componentes) ----
+:root {
+  --rg-azul: #0a2647;
+  --rg-azul-oscuro: #06182e;
+  --rg-azul-medio: #1d4f91;
+  --rg-amarillo: #ffc700;
+  --rg-rojo: #d7263d;
+  --rg-naranja: #d97706;
+  --rg-fondo: #f4f5f9;
+  --rg-superficie: #ffffff;
+  --rg-superficie-suave: #f6f8fb;
+  --rg-borde: #dfe4ee;
+  --rg-texto: #1b2a41;
+  --rg-texto-suave: #5b6577;
+  --rg-radio: 10px;
+  --rg-sombra: 0 1px 2px rgb(10 38 71 / 6%), 0 6px 18px rgb(10 38 71 / 6%);
+  --rg-fuente-titulos: 'Montserrat', sans-serif;
+  --rg-fuente-texto: 'Plus Jakarta Sans', sans-serif;
+  --rg-ancho-maximo: 1400px;
+  --rg-margen: clamp(1rem, 2.5vw, 2.25rem);
+}
+
+// ---- Base ----
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--rg-fondo);
+  color: var(--rg-texto);
+  font: 400 1rem / 1.55 var(--rg-fuente-texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--rg-fuente-titulos);
+  color: var(--rg-azul);
+  line-height: 1.25;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--rg-azul-medio);
+  outline-offset: 2px;
+}
+
+// Enlace de accesibilidad para saltar directamente al contenido con el teclado.
+.saltar-contenido {
+  position: absolute;
+  inset-inline-start: 1rem;
+  inset-block-start: -3rem;
+  z-index: 10;
+  background: var(--rg-amarillo);
+  color: var(--rg-azul);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 700;
+
+  &:focus {
+    inset-block-start: 1rem;
+  }
+}
+
+// ---- Utilidades de maquetación compartidas por las plantillas ----
+.contenedor {
+  max-inline-size: var(--rg-ancho-maximo);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 4rem) var(--rg-margen) 3rem;
+}
+
+.tarjeta {
+  background: var(--rg-superficie);
+  border: 1px solid var(--rg-borde);
+  border-radius: var(--rg-radio);
+  padding: 1.25rem 1.4rem;
+}
+
+// Tarjeta con franja superior de color (Misión/Visión, niveles académicos, pasos de admisión).
+.tarjeta-franja {
+  @extend .tarjeta;
+  border-radius: 2px;
+  border-top: 5px solid var(--franja, var(--rg-azul));
+}
+
+// Tarjeta con borde lateral de color (servicios, reseña histórica, recursos del campus).
+.tarjeta-lateral {
+  @extend .tarjeta;
+  border-radius: 2px;
+  border-left: 5px solid var(--franja, var(--rg-azul));
+}
+
+.franja-azul { --franja: var(--rg-azul); }
+.franja-amarilla { --franja: var(--rg-amarillo); }
+.franja-roja { --franja: var(--rg-rojo); }
+
+.boton-institucional {
+  --mdc-filled-button-container-color: var(--rg-amarillo);
+  --mdc-filled-button-label-text-color: var(--rg-azul);
+  --mdc-filled-button-container-shape: 4px;
+  font-family: var(--rg-fuente-titulos) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+.boton-azul {
+  --mdc-filled-button-container-color: var(--rg-azul);
+  --mdc-filled-button-label-text-color: var(--rg-amarillo);
+  --mdc-filled-button-container-shape: 4px;
+  font-family: var(--rg-fuente-titulos) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+.visualmente-oculto {
+  position: absolute !important;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// ---- Impresión de certificados, claves, carnés y boletines: solo las hojas, sin encabezado ni pie del sitio ----
+@media print {
+  body.imprimiendo-certificado,
+  body.imprimiendo-claves,
+  body.imprimiendo-boletin {
+    background: #fff;
+
+    app-site-header,
+    app-site-footer,
+    .saltar-contenido,
+    .cdk-overlay-container,
+    .no-imprimir {
+      display: none !important;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Las páginas del campus (carné, resultados) se imprimen sin el encabezado ni el pie del sitio.
+@media print {
+  app-site-header,
+  app-site-footer,
+  .saltar-contenido,
+  .no-imprimir {
+    display: none !important;
+  }
+}
+
+// ---- Utilidades compartidas: aula virtual, planeador, mensajes, alertas, comisión y reportes ----
+.tabla-desplazable {
+  overflow-x: auto;
+}
+
+.tabla-datos {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+
+  th,
+  td {
+    padding: 0.5rem 0.6rem;
+    border-block-end: 1px solid var(--rg-borde);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--rg-superficie-suave);
+    color: var(--rg-azul);
+    font-weight: 600;
+  }
+
+  .numero {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.barra-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+
+  mat-form-field {
+    min-inline-size: 150px;
+  }
+}
+
+.etiqueta-estado {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: #e8edf5;
+  color: var(--rg-azul);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &[data-tono='ok'] {
+    background: #dcf5e6;
+    color: #0f7b3f;
+  }
+
+  &[data-tono='alerta'] {
+    background: #fff1cc;
+    color: #8a5a00;
+  }
+
+  &[data-tono='peligro'] {
+    background: #fde2e5;
+    color: #a3162a;
+  }
+}
+
+.formulario-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+
+  .ancho-completo {
+    grid-column: 1 / -1;
+  }
+}
+
+.acciones-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.texto-suave {
+  color: var(--rg-texto-suave);
+}
+
+.pre-linea {
+  white-space: pre-line;
+}
