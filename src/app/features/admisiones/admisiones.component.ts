@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -99,7 +100,8 @@ interface Paso {
 })
 export class AdmisionesComponent {
   protected readonly institucion = INSTITUCION;
-  protected readonly pestana = signal(0);
+  /** ?consulta=1 (enlace "Consultar mi solicitud" del inicio) abre directamente la pestaña de consulta. */
+  protected readonly pestana = signal(inject(ActivatedRoute).snapshot.queryParamMap.has('consulta') ? 1 : 0);
   protected readonly consulta = signal<{ radicado: string; documento: string } | null>(null);
 
   protected abrirConsulta(datos: { radicado: string; documento: string }): void {

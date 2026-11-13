@@ -6,6 +6,10 @@
  * Las plantillas solo imprimen los datos que tienen valor; nunca se inventan.
  */
 export interface DatosInstitucion {
+  /** Tipo de entidad, como aparece en el escudo (p. ej. "Fundación Educativa"). */
+  readonly tipo: string;
+  /** Nombre propio sin el tipo (p. ej. "Rabí Gamaliel"). */
+  readonly nombrePropio: string;
   readonly nombre: string;
   readonly nombreCorto: string;
   readonly ciudad: string;
@@ -30,8 +34,10 @@ export interface DatosInstitucion {
 }
 
 export const INSTITUCION: DatosInstitucion = {
-  nombre: 'Institución Educativa Rabí Gamaliel',
-  nombreCorto: 'I.E. Rabí Gamaliel',
+  tipo: 'Fundación Educativa',
+  nombrePropio: 'Rabí Gamaliel',
+  nombre: 'Fundación Educativa Rabí Gamaliel',
+  nombreCorto: 'Fundación Rabí Gamaliel',
   ciudad: '', // PENDIENTE
   departamento: '', // PENDIENTE
   lema: '', // PENDIENTE
@@ -76,14 +82,18 @@ export function lineaUbicacion(): string {
 export interface EnlaceNavegacion {
   readonly ruta: string;
   readonly etiqueta: string;
+  /** Ícono de Material (barra lateral del diseño 1d). */
+  readonly icono: string;
+  /** Etiqueta corta para la barra lateral (si difiere de `etiqueta`). */
+  readonly corta?: string;
 }
 
 export const NAVEGACION: readonly EnlaceNavegacion[] = [
-  { ruta: '/inicio', etiqueta: 'Inicio' },
-  { ruta: '/nosotros', etiqueta: 'Nosotros' },
-  { ruta: '/academico', etiqueta: 'Académico' },
-  { ruta: '/admisiones', etiqueta: 'Admisiones' },
-  { ruta: '/servicios', etiqueta: 'Servicios' },
-  { ruta: '/contacto', etiqueta: 'Contacto' },
-  { ruta: '/campus', etiqueta: 'Campus Virtual' },
+  { ruta: '/inicio', etiqueta: 'Inicio', icono: 'home' },
+  { ruta: '/nosotros', etiqueta: 'Nosotros', icono: 'diversity_3' },
+  { ruta: '/academico', etiqueta: 'Académico', icono: 'school' },
+  { ruta: '/admisiones', etiqueta: 'Admisiones', icono: 'how_to_reg' },
+  { ruta: '/servicios', etiqueta: 'Servicios', icono: 'volunteer_activism' },
+  { ruta: '/contacto', etiqueta: 'Contacto', icono: 'forum' },
+  { ruta: '/campus', etiqueta: 'Campus Virtual', icono: 'laptop_chromebook', corta: 'Campus' },
 ];

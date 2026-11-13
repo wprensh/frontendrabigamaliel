@@ -85,7 +85,7 @@ export class CertificadoDocumentoComponent {
   /** La librería del QR se descarga solo cuando hay un certificado expedido que mostrar. */
   async #generarQr(url: string): Promise<void> {
     const { toDataURL } = await import('qrcode');
-    const imagen = await toDataURL(url, { margin: 0, width: 240, color: { dark: '#0f3b78', light: '#ffffff' } });
+    const imagen = await toDataURL(url, { margin: 0, width: 240, color: { dark: '#0d2a66', light: '#ffffff' } });
     // Si cambió el certificado mientras se generaba, se descarta.
     if (this.urlVerificacion() === url) {
       this.qr.set(imagen);

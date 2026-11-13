@@ -1,63 +1,74 @@
-<!-- Portada (propuesta 1a · Institucional clásico) -->
-<section class="portada" aria-labelledby="titulo-portada">
-  <div class="portada-texto">
-    <h1 id="titulo-portada">
-      @if (institucion.lema) {
-        Formamos con <span class="lema">{{ institucion.lema }}</span>
-      } @else {
-        Bienvenidos a la <span class="resaltado">{{ institucion.nombre }}</span>
-      }
-    </h1>
-    <p class="portada-descripcion">Sitio oficial, campus virtual y servicios en línea de la institución.</p>
-    <div class="portada-acciones">
-      <a mat-flat-button class="boton-institucional" routerLink="/admisiones">Inscripción de cupos</a>
-      <a mat-stroked-button class="boton-contorno" routerLink="/nosotros">Conócenos</a>
-    </div>
-  </div>
-  <div class="portada-franjas" aria-hidden="true"></div>
-  <!--
-    Foto de portada: PENDIENTE (foto de la sede de Rabí Gamaliel). Cuando llegue, guardarla en
-    public/img/portada.jpg y agregar a este div: style="--rg-foto-portada: url('img/portada.jpg')".
-    La ruta es relativa a propósito: el sitio se publica en /frontendrabigamaliel/ (GitHub Pages) y
-    "img/…" se resuelve con el <base href>. Sin foto se ve el fondo ilustrado de .portada-imagen.
-  -->
-  <div class="portada-imagen" aria-hidden="true"></div>
-</section>
+<!-- Inicio · diseño 1d (Portal de servicios): accesos rápidos, noticias, proceso de admisión y eventos -->
+<div class="inicio">
+  <h1 class="visualmente-oculto">{{ institucion.nombre }}</h1>
 
-<div class="contenedor">
-  <!-- Valores -->
-  @if (valores.length) {
-  <section class="valores" aria-labelledby="titulo-valores">
-    <h2 id="titulo-valores">Nuestros valores</h2>
-    <ul>
-      @for (valor of valores; track valor.nombre) {
-        <li>
-          <span class="valor-icono" [class]="'tono-' + valor.tono">
-            <mat-icon aria-hidden="true">{{ valor.icono }}</mat-icon>
-          </span>
-          {{ valor.nombre }}
-        </li>
-      }
-    </ul>
-  </section>
-  }
+  <!-- Accesos rápidos -->
+  <nav class="accesos" aria-label="Accesos rápidos">
+    @for (acceso of accesos; track acceso.ruta; let primero = $first) {
+      <a class="acceso" [class.destacado]="primero" [routerLink]="acceso.ruta" [queryParams]="acceso.consulta ?? null">
+        <span class="acceso-icono" [class]="'tono-' + acceso.tono"><mat-icon aria-hidden="true">{{ acceso.icono }}</mat-icon></span>
+        <span class="acceso-texto">
+          <strong>{{ acceso.titulo }}</strong>
+          <span>{{ acceso.descripcion }}</span>
+        </span>
+      </a>
+    }
+  </nav>
 
   <div class="bloques">
-    <!-- Noticias recientes: 6 por página, filtrables por fecha (filtro y paginación en la API) -->
+    <!-- Noticias: 5 por página (una destacada y cuatro compactas), filtrables por categoría, texto y fecha -->
     <section
       #seccionNoticias
+      id="noticias"
       class="noticias"
       aria-labelledby="titulo-noticias"
       [attr.aria-busy]="cargandoNoticias()"
     >
       <div class="encabezado-noticias">
-        <h2 id="titulo-noticias">Noticias recientes</h2>
-        @if (paginaNoticias().total > 0) {
-          <span class="conteo">{{ paginaNoticias().total }} {{ paginaNoticias().total === 1 ? 'noticia' : 'noticias' }}</span>
-        }
+        <h2 id="titulo-noticias">Noticias</h2>
+        <div class="categorias" role="group" aria-label="Filtrar noticias por categoría">
+          @for (c of categorias; track c.etiqueta) {
+            <button
+              type="button"
+              class="chip"
+              [class.activo]="categoria() === c.valor"
+              [attr.aria-pressed]="categoria() === c.valor"
+              (click)="cambiarCategoria(c.valor)"
+            >
+              @if (categoria() === c.valor) {
+                <mat-icon aria-hidden="true">check</mat-icon>
+              }
+              {{ c.etiqueta }}
+            </button>
+          }
+          <button
+            type="button"
+            class="chip"
+            [class.activo]="mostrarFechas() || hayFiltroDeFechas()"
+            [attr.aria-expanded]="mostrarFechas()"
+            aria-controls="filtro-fechas"
+            (click)="mostrarFechas.set(!mostrarFechas())"
+          >
+            <mat-icon aria-hidden="true">calendar_month</mat-icon>
+            Fechas
+          </button>
+        </div>
       </div>
 
-      <app-filtro-fechas-noticias [filtro]="filtro()" [archivo]="archivo()" (cambiar)="cambiarFiltro($event)" />
+      @if (mostrarFechas()) {
+        <app-filtro-fechas-noticias id="filtro-fechas" [filtro]="filtro()" [archivo]="archivo()" (cambiar)="cambiarFiltro($event)" />
+      }
+
+      @if (busqueda()) {
+        <p class="resumen-filtro" aria-live="polite">
+          <mat-icon aria-hidden="true">search</mat-icon>
+          <span>Resultados para <strong>“{{ busqueda() }}”</strong></span>
+          <button mat-button type="button" class="quitar-filtro" (click)="quitarBusqueda()">
+            <mat-icon>close</mat-icon>
+            Quitar búsqueda
+          </button>
+        </p>
+      }
 
       @if (hayFiltroDeFechas() && !primeraCarga() && !errorNoticias() && paginaNoticias().total > 0) {
         <p class="resumen-filtro" aria-live="polite">
@@ -79,27 +90,64 @@
           <button mat-button type="button" (click)="cargarNoticias(paginaNoticias().pagina)">Reintentar</button>
         </div>
       } @else if (primeraCarga()) {
-        <div class="rejilla-noticias" aria-hidden="true">
-          @for (m of marcadores; track m) {
-            <div class="marcador"></div>
-          }
+        <div class="marcador destacada-marcador" aria-hidden="true"></div>
+        <div class="compactas" aria-hidden="true">
+          <div class="marcador"></div>
+          <div class="marcador"></div>
         </div>
       } @else {
         @if (cargandoNoticias()) {
           <mat-progress-bar mode="indeterminate" aria-label="Cargando noticias" />
         }
-        <div class="rejilla-noticias" [class.atenuada]="cargandoNoticias()">
-          @for (noticia of noticias(); track noticia.id) {
-            <app-noticia-card [noticia]="noticia" (ver)="verNoticia($event)" />
-          } @empty {
-            @if (hayFiltroDeFechas()) {
-              <div class="vacio vacio-filtro">
+        <div class="lista-noticias" [class.atenuada]="cargandoNoticias()">
+          @if (destacada(); as d) {
+            <article class="destacada">
+              @if (miniaturaDe(d); as img) {
+                <img class="destacada-imagen" [src]="img" alt="" loading="lazy" />
+              } @else {
+                <div class="destacada-imagen sin-imagen" aria-hidden="true">
+                  <mat-icon>{{ estilo(d).icono }}</mat-icon>
+                </div>
+              }
+              <div class="destacada-texto">
+                <span class="categoria" [style.color]="estilo(d).color">{{ estilo(d).etiqueta }}</span>
+                <h3>{{ d.titulo }}</h3>
+                <p>{{ d.resumen }}</p>
+                <time [attr.datetime]="d.fechaPublicacion">{{ aFecha(d.fechaPublicacion) | date: "d 'de' MMMM 'de' y" }}</time>
+                <button type="button" class="leer-mas" (click)="verNoticia(d)">
+                  Leer más<span class="visualmente-oculto">: {{ d.titulo }}</span>
+                </button>
+              </div>
+            </article>
+          }
+
+          @if (restantes().length) {
+            <div class="compactas">
+              @for (noticia of restantes(); track noticia.id) {
+                <button type="button" class="compacta" (click)="verNoticia(noticia)">
+                  @if (miniaturaDe(noticia); as img) {
+                    <img [src]="img" alt="" loading="lazy" />
+                  } @else {
+                    <span class="sin-imagen" aria-hidden="true"><mat-icon>{{ estilo(noticia).icono }}</mat-icon></span>
+                  }
+                  <span class="compacta-texto">
+                    <span class="categoria" [style.color]="estilo(noticia).color">{{ estilo(noticia).etiqueta }}</span>
+                    <strong>{{ noticia.titulo }}</strong>
+                  </span>
+                </button>
+              }
+            </div>
+          }
+
+          @if (!noticias().length) {
+            @if (hayFiltros()) {
+              <div class="tarjeta vacio vacio-filtro">
                 <mat-icon aria-hidden="true">event_busy</mat-icon>
-                <p>No hay noticias publicadas {{ descripcionPeriodo() }}.</p>
-                <button mat-stroked-button type="button" (click)="quitarFiltro()">Ver todas las noticias</button>
+                <p>No hay noticias con los filtros elegidos.</p>
+                <button mat-stroked-button type="button" (click)="quitarTodo()">Ver todas las noticias</button>
               </div>
             } @else {
-              <p class="vacio">Aún no hay noticias publicadas.</p>
+              <p class="tarjeta vacio">Aún no hay noticias publicadas.</p>
             }
           }
         </div>
@@ -119,23 +167,46 @@
       }
     </section>
 
-    <!-- Eventos próximos -->
-    <section class="tarjeta eventos" aria-labelledby="titulo-eventos">
-      <h2 id="titulo-eventos" class="calendario">Próximos eventos</h2>
-      <ul>
-        @for (evento of eventos(); track evento.id) {
-          <li>
-            <button type="button" class="enlace-evento" (click)="verNoticia(evento)">
-              <time [attr.datetime]="evento.fechaPublicacion">{{ aFecha(evento.fechaPublicacion) | date: "d 'de' MMMM" }}</time>
-              <span>{{ evento.titulo }}</span>
-            </button>
-          </li>
-        } @empty {
-          @if (!cargandoEventos()) {
-            <li class="vacio">No hay eventos programados.</li>
+    <div class="lateral">
+      <!-- Proceso de admisión -->
+      <section class="tarjeta proceso" aria-labelledby="titulo-proceso">
+        <h2 id="titulo-proceso">Proceso de admisión</h2>
+        <ol>
+          @for (paso of pasosAdmision; track paso; let i = $index) {
+            <li [class.primero]="i === 0">
+              <span class="numero" aria-hidden="true">{{ i + 1 }}</span>
+              <span>{{ paso }}</span>
+            </li>
           }
-        }
-      </ul>
-    </section>
+        </ol>
+        <a class="boton-pastilla" routerLink="/admisiones" [queryParams]="{ consulta: 1 }">Consultar mi solicitud</a>
+      </section>
+
+      <!-- Próximos eventos -->
+      <section class="tarjeta eventos" aria-labelledby="titulo-eventos">
+        <h2 id="titulo-eventos">Próximos eventos</h2>
+        <ul>
+          @for (evento of eventos(); track evento.id; let i = $index) {
+            <li>
+              <button type="button" class="enlace-evento" (click)="verNoticia(evento)">
+                <span class="fecha" [class]="'tono-' + (i % 3)" aria-hidden="true">
+                  <span class="dia">{{ aFecha(evento.fechaPublicacion) | date: 'dd' }}</span>
+                  <span class="mes">{{ mesCorto(evento.fechaPublicacion) }}</span>
+                </span>
+                <span class="titulo-evento">
+                  <span class="visualmente-oculto">{{ aFecha(evento.fechaPublicacion) | date: "d 'de' MMMM" }}: </span>
+                  {{ evento.titulo }}
+                </span>
+              </button>
+            </li>
+          } @empty {
+            @if (!cargandoEventos()) {
+              <li class="vacio">No hay eventos programados.</li>
+            }
+          }
+        </ul>
+        <a class="ver-calendario" routerLink="/calendario">Ver calendario completo</a>
+      </section>
+    </div>
   </div>
 </div>
