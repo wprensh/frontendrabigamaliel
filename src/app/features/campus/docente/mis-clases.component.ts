@@ -76,7 +76,7 @@ import { EncabezadoCampusComponent } from '../compartido/encabezado-campus.compo
       &:hover,
       &:focus-visible {
         transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgb(15 59 120 / 14%);
+        box-shadow: 0 10px 24px rgb(13 42 102 / 14%);
       }
 
       strong {

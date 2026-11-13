@@ -1,6 +1,6 @@
-# Frontend · I.E. Rabí Gamaliel
+# Frontend · Fundación Rabí Gamaliel
 
-Sitio web, panel administrativo y campus virtual de la **Institución Educativa Rabí Gamaliel**.
+Sitio web, panel administrativo y campus virtual de la **Fundación Educativa Rabí Gamaliel**.
 Construido con **Angular 19** (Standalone Components, Control Flow `@if`/`@for`, Signals) y **Angular Material 19**.
 
 Backend: [backendrabigamaliel](https://github.com/wprensh/backendrabigamaliel) (.NET 9 + PostgreSQL)

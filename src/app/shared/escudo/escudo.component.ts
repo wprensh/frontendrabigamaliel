@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       <source srcset="img/escudo.webp" type="image/webp" />
       <img
         src="img/escudo.png"
-        alt="Escudo de la Institución Educativa Rabí Gamaliel"
+        alt="Escudo de la Fundación Educativa Rabí Gamaliel"
         [width]="tamano()"
         [height]="tamano()"
         decoding="async"

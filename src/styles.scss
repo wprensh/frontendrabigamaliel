@@ -2,8 +2,8 @@
 
 // =====================================================================
 //  Tema de Angular Material 19 (Material 3) + identidad visual
-//  de Rabí Gamaliel, tomada del escudo oficial: azul (cinta y globo) y dorado (laurel).
-//  Si la institución define códigos oficiales, cambiarlos en las variables --rg-*.
+//  de la Fundación Educativa Rabí Gamaliel (diseño 1d · Portal de servicios):
+//  azul marino #0d2a66, dorado #e0b14a y fondo crema #f8f4ea, tomados del escudo oficial.
 // =====================================================================
 
 html {
@@ -36,18 +36,22 @@ html {
 
 // ---- Tokens de diseño institucionales (usados por todos los componentes) ----
 :root {
-  --rg-azul: #0f3b78;
-  --rg-azul-oscuro: #0a2550;
-  --rg-azul-medio: #1a5fb4;
-  --rg-amarillo: #dfa941;
+  --rg-azul: #0d2a66;
+  --rg-azul-oscuro: #081a42;
+  --rg-azul-medio: #1e56b0;
+  --rg-amarillo: #e0b14a;
+  /* Dorado oscuro para texto sobre fondo claro (contraste AA). */
+  --rg-dorado-texto: #8a5a14;
+  --rg-azul-suave: #dde7f8;
+  --rg-dorado-suave: #faedc8;
   --rg-rojo: #d7263d;
   --rg-naranja: #d97706;
-  --rg-fondo: #f4f5f9;
+  --rg-fondo: #f8f4ea;
   --rg-superficie: #ffffff;
-  --rg-superficie-suave: #f6f8fb;
-  --rg-borde: #dfe4ee;
-  --rg-texto: #1b2a41;
-  --rg-texto-suave: #5b6577;
+  --rg-superficie-suave: #fbf8f1;
+  --rg-borde: #e6dfcc;
+  --rg-texto: #1a2340;
+  --rg-texto-suave: #5a6070;
   --rg-radio: 10px;
   --rg-sombra: 0 1px 2px rgb(15 59 120 / 6%), 0 6px 18px rgb(15 59 120 / 6%);
   --rg-fuente-titulos: 'Montserrat', sans-serif;
@@ -180,6 +184,8 @@ img {
 
     app-site-header,
     app-site-footer,
+    app-site-rail,
+    .escribenos,
     .saltar-contenido,
     .cdk-overlay-container,
     .no-imprimir {
@@ -201,6 +207,8 @@ img {
 @media print {
   app-site-header,
   app-site-footer,
+  app-site-rail,
+  .escribenos,
   .saltar-contenido,
   .no-imprimir {
     display: none !important;

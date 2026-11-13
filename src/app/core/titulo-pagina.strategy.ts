@@ -4,7 +4,7 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
 import { INSTITUCION } from './institucion';
 
-/** Título de la pestaña del navegador: "Nosotros | I.E. Rabí Gamaliel". */
+/** Título de la pestaña del navegador: "Nosotros | Fundación Rabí Gamaliel". */
 @Injectable({ providedIn: 'root' })
 export class TituloPaginaStrategy extends TitleStrategy {
   readonly #title = inject(Title);

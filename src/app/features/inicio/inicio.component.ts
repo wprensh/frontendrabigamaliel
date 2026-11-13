@@ -17,10 +17,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { INSTITUCION } from '../../core/institucion';
 import { PagedResult, paginaVacia } from '../../core/models/api.models';
-import { ArchivoMes, Noticia } from '../../core/models/noticia.model';
+import { ArchivoMes, CategoriaNoticia, Noticia, estiloDeCategoria } from '../../core/models/noticia.model';
+import { resolverUrlRecurso } from '../../core/utils/url-recurso';
+import { analizarYoutube, urlMiniaturaYoutube } from '../../core/utils/youtube';
 import { paginadorEnEspanol } from '../../core/paginador-intl';
 import { NoticiasService } from '../../core/services/noticias.service';
 import { desdeFechaIso } from '../../core/utils/fechas';
@@ -33,20 +36,27 @@ import {
   filtroDesdeUrl,
   rangoDelFiltro,
 } from '../../core/utils/periodo-noticias';
-import { NoticiaCardComponent } from '../../shared/noticia-card/noticia-card.component';
 import { NoticiaDetalleDialogComponent } from '../../shared/noticia-detalle/noticia-detalle-dialog.component';
 import { FiltroFechasNoticiasComponent } from './filtro-fechas-noticias/filtro-fechas-noticias.component';
 
-interface Valor {
-  readonly nombre: string;
+interface AccesoRapido {
+  readonly titulo: string;
+  readonly descripcion: string;
   readonly icono: string;
-  readonly tono: 'rojo' | 'amarillo' | 'azul' | 'rosa';
+  readonly ruta: string;
+  readonly consulta?: Record<string, string | number>;
+  readonly tono: 'azul' | 'dorado' | 'crema';
 }
 
-/** Noticias por página en el inicio (dos filas de tres tarjetas en pantallas grandes). */
-const NOTICIAS_POR_PAGINA = 6;
+/** Noticias por página en el inicio: una destacada y cuatro compactas. */
+const NOTICIAS_POR_PAGINA = 5;
 
-/** Plantilla de inicio: portada, valores institucionales, noticias recientes paginadas y filtrables por fecha, y eventos. */
+const MESES_CORTOS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+
+/**
+ * Inicio · diseño 1d (Portal de servicios): accesos rápidos, noticias con filtro por categoría,
+ * búsqueda (?buscar=) y fechas, proceso de admisión y próximos eventos.
+ */
 @Component({
   selector: 'app-inicio',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +67,6 @@ const NOTICIAS_POR_PAGINA = 6;
     MatIconModule,
     MatProgressBarModule,
     MatPaginatorModule,
-    NoticiaCardComponent,
     FiltroFechasNoticiasComponent,
   ],
   providers: [{ provide: MatPaginatorIntl, useFactory: paginadorEnEspanol }],
@@ -73,15 +82,37 @@ export class InicioComponent implements OnInit {
 
   protected readonly institucion = INSTITUCION;
   protected readonly noticiasPorPagina = NOTICIAS_POR_PAGINA;
-  /** Marcadores de carga: una tarjeta vacía por cada noticia esperada. */
-  protected readonly marcadores = Array.from({ length: NOTICIAS_POR_PAGINA }, (_, i) => i);
+  readonly #ruta = inject(ActivatedRoute);
 
-  /** Valores institucionales (PEI). PENDIENTE: la sección se oculta mientras esté vacía. */
-  protected readonly valores: readonly Valor[] = [];
+  protected readonly accesos: readonly AccesoRapido[] = [
+    { titulo: 'Inscripción de cupos', descripcion: 'Radica tu solicitud', icono: 'how_to_reg', ruta: '/admisiones', tono: 'dorado' },
+    { titulo: 'Campus virtual', descripcion: 'Clases y tareas', icono: 'laptop_chromebook', ruta: '/campus', tono: 'azul' },
+    { titulo: 'Radicar PQRS', descripcion: 'Atención ciudadana', icono: 'support_agent', ruta: '/contacto', tono: 'crema' },
+    { titulo: 'Calendario escolar', descripcion: 'Fechas clave del año', icono: 'event', ruta: '/calendario', tono: 'dorado' },
+  ];
+
+  protected readonly categorias: readonly { valor: CategoriaNoticia | null; etiqueta: string }[] = [
+    { valor: null, etiqueta: 'Todas' },
+    { valor: 'Academica', etiqueta: 'Académico' },
+    { valor: 'Cultural', etiqueta: 'Cultura' },
+    { valor: 'Deportiva', etiqueta: 'Deportes' },
+  ];
+
+  protected readonly pasosAdmision: readonly string[] = [
+    'Pre-inscripción en línea',
+    'Entrega de documentos',
+    'Entrevista con coordinación',
+    'Matrícula',
+  ];
+
+  protected readonly categoria = signal<CategoriaNoticia | null>(null);
+  protected readonly busqueda = signal<string>(this.#ruta.snapshot.queryParamMap.get('buscar')?.trim() ?? '');
 
   // ---- Noticias recientes (paginadas en la API, las más nuevas primero) ----
   protected readonly paginaNoticias = signal<PagedResult<Noticia>>(paginaVacia<Noticia>());
   protected readonly noticias = computed(() => this.paginaNoticias().items);
+  protected readonly destacada = computed(() => this.noticias()[0] ?? null);
+  protected readonly restantes = computed(() => this.noticias().slice(1));
   protected readonly cargandoNoticias = signal(true);
   protected readonly primeraCarga = signal(true);
   protected readonly errorNoticias = signal<string | null>(null);
@@ -95,6 +126,20 @@ export class InicioComponent implements OnInit {
     return periodo !== 'todas' && (periodo !== 'personalizado' || desde !== null || hasta !== null);
   });
   protected readonly descripcionPeriodo = computed(() => describirPeriodo(this.filtro(), this.#locale));
+  /** El filtro por fechas se despliega con el botón "Fechas" (abierto si la URL ya trae un periodo). */
+  protected readonly mostrarFechas = signal(false);
+  protected readonly hayFiltros = computed(() => this.hayFiltroDeFechas() || !!this.categoria() || !!this.busqueda());
+
+  constructor() {
+    // El buscador del encabezado navega a /inicio?buscar=…; si ya estamos aquí, se recarga con el nuevo texto.
+    this.#ruta.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      const texto = params.get('buscar')?.trim() ?? '';
+      if (texto !== this.busqueda()) {
+        this.busqueda.set(texto);
+        void this.cargarNoticias(1);
+      }
+    });
+  }
 
   // ---- Eventos próximos ----
   protected readonly eventos = signal<readonly Noticia[]>([]);
@@ -103,6 +148,7 @@ export class InicioComponent implements OnInit {
   protected readonly aFecha = desdeFechaIso;
 
   ngOnInit(): void {
+    this.mostrarFechas.set(this.hayFiltroDeFechas());
     void this.cargarNoticias(1);
     void this.cargarEventos();
     void this.cargarArchivo();
@@ -117,6 +163,8 @@ export class InicioComponent implements OnInit {
       const { desde, hasta } = rangoDelFiltro(this.filtro());
       const resultado = await this.#noticiasService.buscar({
         soloPublicadas: true,
+        buscar: this.busqueda() || undefined,
+        categoria: this.categoria() ?? undefined,
         desde: desde ?? undefined,
         hasta: hasta ?? undefined,
         orden: this.filtro().orden,
@@ -148,13 +196,51 @@ export class InicioComponent implements OnInit {
   /** Aplica un nuevo filtro: vuelve a la primera página y actualiza la URL sin navegar (no mueve el scroll). */
   protected cambiarFiltro(filtro: FiltroFechasNoticias): void {
     this.filtro.set(filtro);
-    const consulta = new HttpParams({ fromObject: filtroAParametrosUrl(filtro) }).toString();
+    const parametros: Record<string, string> = { ...filtroAParametrosUrl(filtro) };
+    if (this.busqueda()) {
+      parametros['buscar'] = this.busqueda();
+    }
+    const consulta = new HttpParams({ fromObject: parametros }).toString();
     this.#location.replaceState(this.#location.path().split('?')[0], consulta);
     void this.cargarNoticias(1);
   }
 
   protected quitarFiltro(): void {
     this.cambiarFiltro({ ...FILTRO_FECHAS_INICIAL, orden: this.filtro().orden });
+  }
+
+  protected cambiarCategoria(categoria: CategoriaNoticia | null): void {
+    this.categoria.set(categoria);
+    void this.cargarNoticias(1);
+  }
+
+  protected quitarBusqueda(): void {
+    this.busqueda.set('');
+    this.cambiarFiltro(this.filtro());
+  }
+
+  protected quitarTodo(): void {
+    this.categoria.set(null);
+    this.busqueda.set('');
+    this.cambiarFiltro({ ...FILTRO_FECHAS_INICIAL, orden: this.filtro().orden });
+  }
+
+  protected estilo(noticia: Noticia) {
+    return estiloDeCategoria(noticia.categoria);
+  }
+
+  /** Portada del video de YouTube, la imagen de la noticia o null (se muestra el ícono de la categoría). */
+  protected miniaturaDe(noticia: Noticia): string | null {
+    const video = analizarYoutube(noticia.imagenUrl);
+    if (video) {
+      return urlMiniaturaYoutube(video);
+    }
+    const url = noticia.imagenUrl?.trim();
+    return url ? resolverUrlRecurso(url) : null;
+  }
+
+  protected mesCorto(fechaIso: string): string {
+    return MESES_CORTOS[desdeFechaIso(fechaIso).getMonth()];
   }
 
   protected async cargarArchivo(): Promise<void> {

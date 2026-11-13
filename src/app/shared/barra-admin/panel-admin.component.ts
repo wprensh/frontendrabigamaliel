@@ -232,7 +232,7 @@ const CLAVE_PLEGADO = 'rg-panel-menu-plegado';
         transform: translateX(-100%);
         transition: transform 0.2s ease;
         z-index: 1001;
-        box-shadow: 0 0 24px rgb(15 59 120 / 25%);
+        box-shadow: 0 0 24px rgb(13 42 102 / 25%);
       }
 
       .plegar { display: none; }
