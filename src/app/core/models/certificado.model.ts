@@ -105,12 +105,14 @@ export const PLANTILLAS_CERTIFICADO: Readonly<
     descripcion: 'Grado cursado y aprobado en un año lectivo.',
     icono: 'school',
     titulo: 'CERTIFICADO DE ESTUDIOS',
-    verbo: 'CERTIFICA',
+    verbo: 'OTORGA EL PRESENTE',
     esEstudiantil: true,
-    formato: 'carta',
+    formato: 'diploma',
     redactar: (d) =>
-      `Que ${identificacion(d)}, cursó y aprobó en esta institución el grado ${grado(d)} durante el año lectivo ` +
-      `${anio(d)}, de acuerdo con el plan de estudios vigente y el Proyecto Educativo Institucional (PEI).\n\n` +
+      'Por haber cursado y aprobado en esta institución el grado:\n\n' +
+      `“${grado(d).toUpperCase()}”\n\n` +
+      `Durante el año lectivo ${anio(d)}, de acuerdo con el plan de estudios vigente y el Proyecto Educativo ` +
+      'Institucional (PEI).\n\n' +
       'Se expide a solicitud de la parte interesada.',
   },
   Matricula: {
