@@ -28,6 +28,18 @@ export interface DatosInstitucion {
     readonly codigoDane: string;
     readonly nit: string;
   };
+  /** Quien firma como representante legal de la Fundación (constancias de cursos y grados). */
+  readonly representanteLegal: {
+    readonly nombre: string;
+    readonly cargo: string;
+  };
+  /** Escuela de la Fundación que dicta los cursos y talleres (constancias de cursos). */
+  readonly escuela: {
+    readonly nombre: string;
+    /** Nombre comercial que se destaca en la constancia, p. ej. 'Enamorarte'. */
+    readonly marca: string;
+    readonly director: { readonly nombre: string; readonly cargo: string };
+  };
   readonly redes: {
     readonly facebook: string;
     readonly instagram: string;
@@ -48,16 +60,22 @@ export const INSTITUCION: DatosInstitucion = {
   nombreCorto: 'Fundación Rabí Gamaliel',
   ciudad: '', // PENDIENTE
   departamento: '', // PENDIENTE
-  lema: '', // PENDIENTE
-  direccion: '', // PENDIENTE
-  telefonos: '', // PENDIENTE
-  correo: '', // PENDIENTE
+  lema: 'Educamos con valores, formamos líderes para el futuro',
+  direccion: 'Urb. Buena Vista MC Lote 66',
+  telefonos: '3145025527',
+  correo: 'omrolic69@gmail.com',
   horarioAtencion: '', // PENDIENTE (p. ej. '7:00 a.m. - 3:00 p.m.')
   rectoria: { nombre: '', cargo: 'Rector(a)' }, // PENDIENTE: nombre completo
+  representanteLegal: { nombre: '', cargo: 'Representante Legal' }, // PENDIENTE: nombre completo
+  escuela: {
+    nombre: 'Escuela de Artes e Idiomas',
+    marca: 'Enamorarte',
+    director: { nombre: '', cargo: 'Director(a)' }, // PENDIENTE: nombre completo
+  },
   membrete: {
     resolucionAprobacion: '', // PENDIENTE
     codigoDane: '', // PENDIENTE
-    nit: '', // PENDIENTE
+    nit: '900552853-9',
   },
   redes: {
     facebook: '', // PENDIENTE

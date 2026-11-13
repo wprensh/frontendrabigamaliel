@@ -1,23 +1,25 @@
-// La hoja mide 8,5 × 11 pulgadas (carta). En pantalla 1em = ancho/51 (≈16 px a tamaño real),
-// así todo el documento se escala de forma proporcional al ancho del contenedor.
+// Dos plantillas tamaño carta. En pantalla todo se mide en `em` y el tamaño de letra depende del ancho
+// del contenedor, así el documento se escala de forma proporcional; al imprimir ocupa una hoja exacta.
+//  - .hoja: vertical 8,5 × 11 in (1em = ancho/51 ≈ 16 px a tamaño real).
+//  - .diploma: horizontal 11 × 8,5 in (1em = ancho/66 ≈ 16 px a tamaño real).
 :host {
   display: block;
   container-type: inline-size;
+  --azul: #0d2a66;
+  --azul-oscuro: #081a42;
+  --oro: #c9962e;
+  --oro-claro: #f1d58a;
+  --tinta: #1b2a41;
 }
 
-.hoja {
+.hoja,
+.diploma {
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   inline-size: 100%;
-  aspect-ratio: 8.5 / 11;
-  font-size: calc(100cqi / 51);
-  padding: 2.6em 3.6em 0;
   background: #fff;
-  color: #1b2a41;
+  color: var(--tinta);
   box-shadow: 0 2px 10px rgb(13 42 102 / 18%);
-  page: certificado;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
@@ -26,16 +28,17 @@
   position: absolute;
   inset: 50% auto auto 50%;
   inline-size: 26em;
-  translate: -50% -42%;
-  opacity: 0.06;
+  translate: -50% -45%;
+  opacity: 0.05;
   pointer-events: none;
 }
 
-.sello {
+.sello-texto {
   position: absolute;
   inset: 45% 0 auto;
+  z-index: 3;
   text-align: center;
-  rotate: -28deg;
+  rotate: -24deg;
   font: 700 5.2em / 1 var(--rg-fuente-titulos);
   letter-spacing: 0.08em;
   color: rgb(13 42 102 / 7%);
@@ -47,131 +50,18 @@
   border-block: 0.06em solid rgb(215 38 61 / 30%);
 }
 
-// ---- Membrete ----
-.membrete {
+// ---- Verificación (QR) compartida ----
+.verificacion {
   display: flex;
   align-items: center;
-  gap: 1.4em;
-
-  .escudo {
-    inline-size: 6em !important;
-    block-size: 6em !important;
-    padding: 0;
-  }
-}
-
-.membrete-texto {
-  flex: 1;
-  text-align: center;
-
-  p {
-    margin: 0;
-    font-size: 0.72em;
-    line-height: 1.45;
-    color: #3b4a61;
-  }
-
-  .nombre {
-    font: 700 1.5em / 1.2 var(--rg-fuente-titulos);
-    color: var(--rg-azul);
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    margin-block-end: 0.25em;
-  }
-
-  .lema {
-    font-style: italic;
-    font-weight: 600;
-    color: var(--rg-azul-medio);
-  }
-}
-
-.filete {
-  margin-block: 1em 0;
-  block-size: 0.38em;
-  border-block: 0.22em solid var(--rg-azul);
-  border-block-end: 0.1em solid var(--rg-amarillo);
-}
-
-// ---- Cuerpo ----
-.cuerpo {
-  flex: 1;
-  padding-block: 2em 1em;
-  font-family: Georgia, 'Times New Roman', serif;
-}
-
-.encabezado-firmante,
-.verbo {
-  margin: 0;
-  text-align: center;
-  font: 700 0.85em / 1.4 var(--rg-fuente-titulos);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--rg-azul);
-}
-
-.titulo {
-  margin: 1.1em 0 1.2em;
-  text-align: center;
-  font: 700 1.55em / 1.2 var(--rg-fuente-titulos);
-  letter-spacing: 0.14em;
-  color: var(--rg-azul);
-}
-
-.verbo {
-  margin-block-end: 1.4em;
-}
-
-.parrafo {
-  margin: 0 0 1.1em;
-  font-size: 1em;
-  line-height: 1.75;
-  text-align: justify;
-  white-space: pre-line;
-  hyphens: auto;
-}
-
-// ---- Firma ----
-.firma {
-  margin-block: 1em 1.6em;
-  text-align: center;
-
-  // Espacio para la firma manuscrita y el sello.
-  .linea {
-    inline-size: 17em;
-    margin: 4.5em auto 0.4em;
-    border-block-end: 0.07em solid #1b2a41;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.85em;
-  }
-
-  .firmante {
-    font: 700 0.95em / 1.4 var(--rg-fuente-titulos);
-    text-transform: uppercase;
-    color: var(--rg-azul);
-  }
-}
-
-// ---- Pie ----
-.pie {
-  border-block-start: 0.06em solid #c9d2e0;
-  padding-block: 0.9em 0.8em;
-  font-size: 0.66em;
+  gap: 0.9em;
+  font-size: 0.62em;
   color: #4a566b;
 
   p {
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.45;
   }
-}
-
-.verificacion {
-  display: flex;
-  align-items: center;
-  gap: 1.2em;
 }
 
 .qr {
@@ -185,7 +75,7 @@
 }
 
 .codigo strong {
-  color: var(--rg-azul);
+  color: var(--azul);
   letter-spacing: 0.05em;
 }
 
@@ -194,23 +84,547 @@
   word-break: break-all;
 }
 
-.contacto {
-  margin-block-start: 0.7em !important;
-  text-align: center;
+// =====================================================================
+// Hoja membretada vertical
+// =====================================================================
+.hoja {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 8.5 / 11;
+  font-size: calc(100cqi / 51);
+  padding: 0 1.9em;
+  page: certificado;
 }
 
-.franjas {
-  margin-inline: -3.6em;
+.onda {
+  position: absolute;
+  inset-inline: 0;
+  inline-size: 100%;
+  pointer-events: none;
+
+  .azul {
+    fill: var(--azul);
+  }
+
+  .oro {
+    fill: none;
+    stroke: var(--oro);
+    stroke-width: 5;
+  }
+}
+
+.onda-sup {
+  inset-block-start: 0;
+  block-size: 9em;
+}
+
+.onda-inf {
+  inset-block-end: 0;
+  block-size: 6em;
+}
+
+.estrella {
+  position: absolute;
+  inset: auto 0 0.9em;
+  text-align: center;
+  color: var(--oro-claro);
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.membrete {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 3.6em 0.6em 0.6em 1.6em;
+}
+
+.m-escudo {
+  inline-size: 7.4em;
+  block-size: 7.4em;
+  object-fit: contain;
+}
+
+.m-lema {
+  display: grid;
+  margin: 0 1.2em 1.4em 0;
+  font: 700 0.95em / 1.4 Georgia, 'Times New Roman', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--azul);
+}
+
+.recuadro {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 0.08em solid var(--oro);
+  border-radius: 1.4em;
+  padding: 1.4em 2.6em 1.2em;
+  margin-block-end: 0.6em;
+}
+
+.cuerpo {
+  flex: 1;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.encabezado-firmante,
+.verbo {
+  margin: 0;
+  text-align: center;
+  font: 700 0.85em / 1.4 var(--rg-fuente-titulos);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--azul);
+}
+
+.linea-legal {
+  margin: 0.2em 0 0;
+  text-align: center;
+  font-size: 0.7em;
+  color: #4a566b;
+}
+
+.titulo {
+  margin: 0.9em 0 0.9em;
+  text-align: center;
+  font: 700 1.5em / 1.2 var(--rg-fuente-titulos);
+  letter-spacing: 0.12em;
+  color: var(--azul);
+}
+
+.verbo {
+  margin-block-end: 1.1em;
+}
+
+.parrafo {
+  margin: 0 0 1em;
+  font-size: 1em;
+  line-height: 1.7;
+  text-align: justify;
+  white-space: pre-line;
+  hyphens: auto;
+}
+
+.firma {
+  margin-block: 0.4em 1em;
+  text-align: center;
+
+  .linea {
+    inline-size: 17em;
+    margin: 3.6em auto 0.4em;
+    border-block-end: 0.07em solid var(--tinta);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85em;
+  }
+
+  .firmante {
+    font: 700 0.95em / 1.4 var(--rg-fuente-titulos);
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+}
+
+.verificacion-carta {
+  padding-block-start: 0.7em;
+  border-block-start: 0.06em solid #e6dfcc;
+}
+
+.pie-datos {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  margin-block-end: 6.4em;
+  padding-inline: 1em;
+
+  .dato {
+    flex: 1;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.15em;
+    padding: 0.2em 0.6em;
+    text-align: center;
+    font-size: 0.62em;
+    color: var(--tinta);
+
+    & + .dato {
+      border-inline-start: 0.12em solid var(--oro);
+    }
+
+    strong {
+      margin-block-start: 0.3em;
+      color: var(--azul);
+      text-transform: uppercase;
+    }
+
+    .valor {
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+  }
+
+  .dato:last-child .valor {
+    text-transform: none;
+  }
+
+  .icono {
+    display: grid;
+    place-items: center;
+    inline-size: 3.6em;
+    block-size: 3.6em;
+    border-radius: 50%;
+    background: var(--azul);
+    color: #fff;
+
+    b {
+      font: 700 1.05em / 1 var(--rg-fuente-titulos);
+    }
+
+    svg {
+      inline-size: 1.9em;
+      block-size: 1.9em;
+      fill: currentcolor;
+    }
+  }
+}
+
+// =====================================================================
+// Constancia horizontal (cursos y grados)
+// =====================================================================
+.diploma {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  aspect-ratio: 11 / 8.5;
+  font-size: calc(100cqi / 66);
+  padding: 2.4em 4.4em 2em;
+  background: radial-gradient(ellipse at center, #fffdf7 0%, #fbf7ec 70%, #f5efdf 100%);
+  font-family: Georgia, 'Times New Roman', serif;
+  page: certificado-horizontal;
+}
+
+.marco {
+  position: absolute;
+  inset: 1.1em;
+  border: 0.18em solid var(--oro);
+  outline: 0.06em solid var(--oro);
+  outline-offset: -0.55em;
+  pointer-events: none;
+}
+
+// Cintas azul y dorada en dos esquinas opuestas.
+.esquina {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.esquina-sup {
+  background: linear-gradient(
+    135deg,
+    transparent 0 2.5%,
+    var(--azul) 2.5% 8%,
+    var(--oro-claro) 8% 8.5%,
+    var(--oro) 8.5% 9.6%,
+    transparent 9.6%
+  );
+}
+
+.esquina-inf {
+  background: linear-gradient(
+    315deg,
+    transparent 0 2.5%,
+    var(--azul) 2.5% 8%,
+    var(--oro-claro) 8% 8.5%,
+    var(--oro) 8.5% 9.6%,
+    transparent 9.6%
+  );
+}
+
+.d-encabezado {
+  position: relative;
+  z-index: 1;
+  min-block-size: 8.6em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6em;
+  inline-size: 100%;
+}
+
+.d-escudo {
+  position: absolute;
+  inset-inline-start: 1em;
+  inline-size: 8.6em;
+  block-size: 8.6em;
+  object-fit: contain;
+}
+
+.d-institucion {
+  text-align: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+.d-nombre {
+  font: 700 1.75em / 1.2 Georgia, 'Times New Roman', serif;
+  color: var(--azul);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.d-nit {
+  font-size: 0.95em;
+  color: var(--tinta);
+}
+
+.d-escuela {
+  margin-block-start: 0.2em !important;
+  font-size: 1.25em;
+  color: var(--azul);
+}
+
+.d-marca {
+  font: 700 2.2em / 1.1 var(--rg-fuente-titulos);
+  letter-spacing: 0.02em;
+  color: var(--azul);
+
+  span {
+    font-style: italic;
+    color: #8a2a72;
+  }
+}
+
+.d-filete {
+  inline-size: 92%;
+  margin-block: 0.6em 0.5em;
+  border-block-start: 0.12em solid var(--oro);
+}
+
+.d-verbo {
+  margin: 0;
+  font: 700 1.05em / 1.4 Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--azul);
+}
+
+// Cinta azul con puntas recortadas y borde dorado.
+.d-cinta {
+  margin: 0.35em 0 0.5em;
+  padding: 0.12em;
+  background: linear-gradient(90deg, var(--oro), var(--oro-claro), var(--oro));
+  clip-path: polygon(0 0, 100% 0, 96.5% 50%, 100% 100%, 0 100%, 3.5% 50%);
 
   span {
     display: block;
-    block-size: 0.55em;
-    background: var(--rg-azul);
+    padding: 0.4em 3.4em;
+    background: linear-gradient(180deg, #1a3d86, var(--azul) 55%, var(--azul-oscuro));
+    clip-path: polygon(0 0, 100% 0, 96.4% 50%, 100% 100%, 0 100%, 3.6% 50%);
+    font: 700 1.05em / 1.25 Georgia, 'Times New Roman', serif;
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-align: center;
   }
 
-  span + span {
-    block-size: 0.3em;
-    background: var(--rg-amarillo);
+  font-size: 1.55em;
+}
+
+.d-cuerpo {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  padding-inline: 7em;
+  text-align: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+// Ramas de laurel dibujadas con hojas (elipses doradas).
+.laurel {
+  position: absolute;
+  inset-block-start: 1.2em;
+  inline-size: 5.4em;
+  block-size: 10em;
+  opacity: 0.85;
+  background:
+    radial-gradient(ellipse 0.55em 1.1em at 50% 8%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 30% 22%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 70% 22%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 22% 40%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 78% 40%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 22% 58%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 78% 58%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 30% 76%, var(--oro-claro) 98%, transparent),
+    radial-gradient(ellipse 0.55em 1.1em at 70% 76%, var(--oro-claro) 98%, transparent),
+    linear-gradient(var(--oro-claro), var(--oro-claro)) 50% 10% / 0.12em 85% no-repeat;
+}
+
+.laurel-izq {
+  inset-inline-start: 0.4em;
+  rotate: -12deg;
+}
+
+.laurel-der {
+  inset-inline-end: 0.4em;
+  rotate: 12deg;
+}
+
+.d-beneficiario {
+  font: 700 1.7em / 1.2 Georgia, 'Times New Roman', serif;
+  color: var(--azul);
+  letter-spacing: 0.01em;
+}
+
+.d-documento {
+  margin-block: 0.2em 0.5em !important;
+  font: 700 0.95em / 1.4 Georgia, 'Times New Roman', serif;
+}
+
+.d-parrafo {
+  margin-block-end: 0.45em !important;
+  font-size: 1.02em;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.d-cierre {
+  margin-block-start: 0.4em !important;
+}
+
+.d-destacado {
+  display: inline-block;
+  min-inline-size: 55%;
+  margin-block: 0.15em 0.55em !important;
+  padding: 0.25em 1.6em;
+  border: 0.1em solid var(--oro);
+  outline: 0.06em solid var(--oro-claro);
+  outline-offset: -0.35em;
+  background: #fff;
+  font: 700 1.55em / 1.3 Georgia, 'Times New Roman', serif;
+  color: var(--azul);
+}
+
+.d-firmas {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 2em;
+  inline-size: 100%;
+  padding-inline: 1.5em;
+}
+
+.d-firma {
+  text-align: center;
+
+  .linea {
+    inline-size: 17em;
+    max-inline-size: 100%;
+    margin: 0 auto 0.35em;
+    border-block-end: 0.07em solid var(--tinta);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85em;
+    line-height: 1.35;
+  }
+
+  .firmante {
+    font: 700 0.98em / 1.35 Georgia, 'Times New Roman', serif;
+    color: var(--tinta);
+  }
+}
+
+.d-verificacion {
+  display: flex;
+  justify-content: center;
+  text-align: start;
+
+  .verificacion {
+    font-size: 0.7em;
+  }
+}
+
+.d-qr-esquina {
+  position: absolute;
+  z-index: 1;
+  inset: 2.5em 2.6em auto auto;
+  inline-size: 7.5em;
+
+  .verificacion {
+    flex-direction: column;
+    gap: 0.4em;
+    font-size: 0.5em;
+    text-align: center;
+  }
+
+  .qr {
+    inline-size: 11em;
+    block-size: 11em;
+  }
+
+  .url-texto {
+    display: none;
+  }
+}
+
+// Medalla dorada con cintas.
+.d-sello {
+  position: relative;
+  inline-size: 7.4em;
+  block-size: 8.6em;
+
+  .medalla {
+    position: absolute;
+    inset: 0 0 auto;
+    display: grid;
+    place-items: center;
+    inline-size: 7.4em;
+    block-size: 7.4em;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, #f6dc8f 0 52%, #c9962e 53% 56%, #f3d27a 57% 64%, transparent 65%),
+      repeating-conic-gradient(from 0deg, #c9962e 0 5deg, #e8bd55 5deg 10deg);
+    box-shadow: 0 0.2em 0.4em rgb(0 0 0 / 18%);
+
+    svg {
+      inline-size: 3.2em;
+      block-size: 3.2em;
+      fill: #3a2a12;
+    }
+  }
+
+  .cintas {
+    position: absolute;
+    inset: auto 0 0;
+    block-size: 4em;
+    background:
+      linear-gradient(105deg, transparent 0 22%, #c9962e 22% 40%, transparent 40%),
+      linear-gradient(75deg, transparent 0 60%, #b5832a 60% 78%, transparent 78%);
+    clip-path: polygon(15% 0, 85% 0, 85% 100%, 72% 85%, 58% 100%, 42% 100%, 28% 85%, 15% 100%);
   }
 }
 
@@ -220,10 +634,23 @@
   margin: 0;
 }
 
+@page certificado-horizontal {
+  size: letter landscape;
+  margin: 0;
+}
+
 @media print {
   .hoja {
     inline-size: 8.5in;
     block-size: 11in;
+    aspect-ratio: auto;
+    font-size: 16px;
+    box-shadow: none;
+  }
+
+  .diploma {
+    inline-size: 11in;
+    block-size: 8.5in;
     aspect-ratio: auto;
     font-size: 16px;
     box-shadow: none;

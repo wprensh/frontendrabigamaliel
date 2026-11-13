@@ -1,7 +1,21 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormGroupDirective, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormGroupDirective,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -9,7 +23,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -35,7 +53,10 @@ import { paginadorEnEspanol } from '../../../core/paginador-intl';
 import { CertificadosService } from '../../../core/services/certificados.service';
 import { SesionService } from '../../../core/services/sesion.service';
 import { aFechaIso, desdeFechaIso } from '../../../core/utils/fechas';
-import { aplicarErroresDeServidor, mensajeDeError } from '../../../core/utils/http-error';
+import {
+  aplicarErroresDeServidor,
+  mensajeDeError,
+} from '../../../core/utils/http-error';
 import { CertificadoDocumentoComponent } from '../../../shared/certificado-documento/certificado-documento.component';
 import { PageHeadingComponent } from '../../../shared/page-heading/page-heading.component';
 import { AnularCertificadoDialogComponent } from './anular-certificado-dialog.component';
@@ -92,8 +113,16 @@ export class CertificadosAdminComponent implements OnInit {
   protected readonly plantillaDe = plantillaDe;
   protected readonly sigla = siglaDocumento;
   protected readonly aFecha = desdeFechaIso;
-  protected readonly columnas = ['codigo', 'beneficiario', 'tipo', 'fecha', 'estado', 'acciones'] as const;
-  protected readonly porId = (_: number, certificado: Certificado): string => certificado.id;
+  protected readonly columnas = [
+    'codigo',
+    'beneficiario',
+    'tipo',
+    'fecha',
+    'estado',
+    'acciones',
+  ] as const;
+  protected readonly porId = (_: number, certificado: Certificado): string =>
+    certificado.id;
 
   // ---- Estado de la vista ----
   protected readonly busqueda = signal('');
@@ -110,24 +139,49 @@ export class CertificadosAdminComponent implements OnInit {
   // ---- Formulario reactivo tipado ----
   protected readonly formulario = this.#fb.group({
     tipo: ['Estudios' as TipoCertificado, Validators.required],
-    titulo: [plantillaDe('Estudios').titulo, [Validators.required, Validators.maxLength(150)]],
+    titulo: [
+      plantillaDe('Estudios').titulo,
+      [Validators.required, Validators.maxLength(150)],
+    ],
     nombreBeneficiario: ['', [Validators.required, Validators.maxLength(150)]],
     tipoDocumento: ['TarjetaIdentidad' as TipoDocumento, Validators.required],
-    numeroDocumento: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(/^[A-Za-z0-9.-]+$/)]],
+    numeroDocumento: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(20),
+        Validators.pattern(/^[A-Za-z0-9.-]+$/),
+      ],
+    ],
     grado: ['', Validators.maxLength(50)],
-    anioLectivo: [new Date().getFullYear() as number | null, [Validators.min(1950), Validators.max(2100)]],
+    anioLectivo: [
+      new Date().getFullYear() as number | null,
+      [Validators.min(1950), Validators.max(2100)],
+    ],
     contenido: ['', [Validators.required, Validators.maxLength(5000)]],
     fechaExpedicion: [new Date(), Validators.required],
-    firmanteNombre: [INSTITUCION.rectoria.nombre as string, [Validators.required, Validators.maxLength(120)]],
-    firmanteCargo: [INSTITUCION.rectoria.cargo as string, [Validators.required, Validators.maxLength(80)]],
+    firmanteNombre: [
+      INSTITUCION.rectoria.nombre as string,
+      [Validators.required, Validators.maxLength(120)],
+    ],
+    firmanteCargo: [
+      INSTITUCION.rectoria.cargo as string,
+      [Validators.required, Validators.maxLength(80)],
+    ],
   });
 
   /** Directiva del formulario: permite reiniciar su estado "enviado" para que no queden errores en rojo. */
-  private readonly directivaFormulario = viewChild('formExpedir', { read: FormGroupDirective });
+  private readonly directivaFormulario = viewChild('formExpedir', {
+    read: FormGroupDirective,
+  });
 
-  readonly #valor = toSignal(this.formulario.valueChanges, { initialValue: this.formulario.getRawValue() });
+  readonly #valor = toSignal(this.formulario.valueChanges, {
+    initialValue: this.formulario.getRawValue(),
+  });
 
-  protected readonly plantilla = computed(() => plantillaDe(this.#valor().tipo ?? 'Personalizado'));
+  protected readonly plantilla = computed(() =>
+    plantillaDe(this.#valor().tipo ?? 'Personalizado'),
+  );
 
   protected readonly gradosFiltrados = computed(() => {
     const texto = (this.#valor().grado ?? '').toLowerCase();
@@ -164,16 +218,23 @@ export class CertificadosAdminComponent implements OnInit {
     this.#redactar();
 
     // Al cambiar de tipo se proponen el título y el texto de ese tipo.
-    this.formulario.controls.tipo.valueChanges.pipe(takeUntilDestroyed()).subscribe((tipo) => {
-      this.formulario.controls.titulo.setValue(plantillaDe(tipo).titulo);
-      this.textoEditado.set(false);
-      this.#redactar();
-    });
+    this.formulario.controls.tipo.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((tipo) => {
+        this.formulario.controls.titulo.setValue(plantillaDe(tipo).titulo);
+        this.#proponerFirmante(tipo);
+        this.textoEditado.set(false);
+        this.#redactar();
+      });
 
     // Mientras el texto no se haya editado a mano, se mantiene al día con los datos del beneficiario.
-    this.formulario.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.#redactar());
+    this.formulario.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.#redactar());
 
-    this.#destroyRef.onDestroy(() => document.body.classList.remove(CLASE_IMPRESION));
+    this.#destroyRef.onDestroy(() =>
+      document.body.classList.remove(CLASE_IMPRESION),
+    );
   }
 
   ngOnInit(): void {
@@ -254,7 +315,9 @@ export class CertificadosAdminComponent implements OnInit {
 
     const v = this.formulario.getRawValue();
     if (tieneMarcadores(v.contenido) || tieneMarcadores(v.titulo)) {
-      this.errorFormulario.set('Complete o borre los datos entre corchetes [ ] antes de expedir el certificado.');
+      this.errorFormulario.set(
+        'Complete o borre los datos entre corchetes [ ] antes de expedir el certificado.',
+      );
       return;
     }
 
@@ -277,7 +340,10 @@ export class CertificadosAdminComponent implements OnInit {
       const certificado = await this.servicio.expedir(datos);
       this.#guardarFirmante(datos.firmanteNombre, datos.firmanteCargo);
       this.seleccionado.set(certificado);
-      this.#snackBar.open(`Certificado ${certificado.codigo} expedido. Ya puede imprimirlo.`, 'Cerrar');
+      this.#snackBar.open(
+        `Certificado ${certificado.codigo} expedido. Ya puede imprimirlo.`,
+        'Cerrar',
+      );
       this.#limpiarBeneficiario();
       this.pagina.set(1);
       await this.recargar();
@@ -292,7 +358,12 @@ export class CertificadosAdminComponent implements OnInit {
 
   /** Conserva tipo, fecha y firmante para expedir varios seguidos; borra los datos de la persona. */
   #limpiarBeneficiario(): void {
-    const valor = { ...this.formulario.getRawValue(), nombreBeneficiario: '', numeroDocumento: '', grado: '' };
+    const valor = {
+      ...this.formulario.getRawValue(),
+      nombreBeneficiario: '',
+      numeroDocumento: '',
+      grado: '',
+    };
     this.textoEditado.set(false);
     const directiva = this.directivaFormulario();
     if (directiva) {
@@ -307,7 +378,9 @@ export class CertificadosAdminComponent implements OnInit {
 
   protected ver(certificado: Certificado): void {
     this.seleccionado.set(certificado);
-    document.getElementById('vista-previa')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document
+      .getElementById('vista-previa')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   protected volverAlFormulario(): void {
@@ -335,16 +408,21 @@ export class CertificadosAdminComponent implements OnInit {
     this.textoEditado.set(true);
     this.formulario.updateValueAndValidity(); // Notifica una sola vez a la vista previa.
     this.seleccionado.set(null);
-    document.getElementById('titulo-formulario')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document
+      .getElementById('titulo-formulario')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   protected async anular(certificado: Certificado): Promise<void> {
     const motivo = await firstValueFrom(
       this.#dialog
-        .open<AnularCertificadoDialogComponent, Certificado, string>(AnularCertificadoDialogComponent, {
-          data: certificado,
-          width: '480px',
-        })
+        .open<AnularCertificadoDialogComponent, Certificado, string>(
+          AnularCertificadoDialogComponent,
+          {
+            data: certificado,
+            width: '480px',
+          },
+        )
         .afterClosed(),
     );
 
@@ -366,7 +444,11 @@ export class CertificadosAdminComponent implements OnInit {
   /** Imprime solo la hoja (el navegador también permite "Guardar como PDF"). */
   protected imprimir(): void {
     document.body.classList.add(CLASE_IMPRESION);
-    window.addEventListener('afterprint', () => document.body.classList.remove(CLASE_IMPRESION), { once: true });
+    window.addEventListener(
+      'afterprint',
+      () => document.body.classList.remove(CLASE_IMPRESION),
+      { once: true },
+    );
     window.print();
   }
 
@@ -374,16 +456,43 @@ export class CertificadosAdminComponent implements OnInit {
 
   #restaurarFirmante(): void {
     try {
-      const guardado = JSON.parse(localStorage.getItem(CLAVE_FIRMANTE) ?? 'null') as {
+      const guardado = JSON.parse(
+        localStorage.getItem(CLAVE_FIRMANTE) ?? 'null',
+      ) as {
         nombre?: string;
         cargo?: string;
       } | null;
       if (guardado?.nombre) {
-        this.formulario.patchValue({ firmanteNombre: guardado.nombre, firmanteCargo: guardado.cargo ?? '' });
+        this.formulario.patchValue({
+          firmanteNombre: guardado.nombre,
+          firmanteCargo: guardado.cargo ?? '',
+        });
       }
     } catch {
       // Sin almacenamiento o con un valor dañado se empieza en blanco.
     }
+  }
+
+  /**
+   * Las constancias de cursos y grados las firma el representante legal de la Fundación; los demás
+   * certificados, rectoría. Solo se cambia si el firmante actual es el propuesto para el otro formato.
+   */
+  #proponerFirmante(tipo: TipoCertificado): void {
+    const { rectoria, representanteLegal } = INSTITUCION;
+    const [destino, origen] =
+      plantillaDe(tipo).formato === 'diploma'
+        ? [representanteLegal, rectoria]
+        : [rectoria, representanteLegal];
+    const actual = this.formulario.getRawValue();
+    if (actual.firmanteCargo !== origen.cargo && actual.firmanteCargo) {
+      return;
+    }
+    this.formulario.patchValue({
+      firmanteCargo: destino.cargo,
+      firmanteNombre:
+        destino.nombre ||
+        (actual.firmanteNombre === origen.nombre ? '' : actual.firmanteNombre),
+    });
   }
 
   #guardarFirmante(nombre: string, cargo: string): void {
