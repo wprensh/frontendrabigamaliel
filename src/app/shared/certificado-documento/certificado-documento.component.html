@@ -38,8 +38,8 @@
     <h1 class="d-cinta"><span>{{ certificado().titulo || 'CONSTANCIA' }}</span></h1>
 
     <div class="d-cuerpo">
-      <span class="laurel laurel-izq" aria-hidden="true"></span>
-      <span class="laurel laurel-der" aria-hidden="true"></span>
+      <img class="laurel laurel-izq" src="img/olivo.webp" alt="" aria-hidden="true" />
+      <img class="laurel laurel-der" src="img/olivo.webp" alt="" aria-hidden="true" />
       <p class="d-beneficiario">A: {{ (certificado().nombreBeneficiario || '[Nombres y apellidos]').toUpperCase() }}</p>
       <p class="d-documento">
         Documento de identidad: {{ sigla() }} No. {{ certificado().numeroDocumento || '[número]' }}
@@ -65,15 +65,7 @@
         <p>{{ institucion.nombre }}</p>
       </div>
 
-      <div class="d-sello" aria-hidden="true">
-        <span class="cintas"></span>
-        <span class="medalla">
-          <svg viewBox="0 0 64 64" focusable="false">
-            <path d="M32 14 4 26l28 12 22-9.4V42h4V26L32 14Z" />
-            <path d="M16 34v9c0 4 7.2 8 16 8s16-4 16-8v-9l-16 7-16-7Z" />
-          </svg>
-        </span>
-      </div>
+      <img class="d-sello" src="img/sello.webp" alt="" aria-hidden="true" />
 
       @if (esCurso()) {
         <div class="d-firma">
