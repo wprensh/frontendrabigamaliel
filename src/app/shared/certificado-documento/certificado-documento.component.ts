@@ -59,7 +59,7 @@ export class CertificadoDocumentoComponent {
     () => plantillaDe(this.certificado().tipo).formato,
   );
   protected readonly esCurso = computed(
-    () => this.certificado().tipo === 'Curso',
+    () => plantillaDe(this.certificado().tipo).escuela === true,
   );
 
   /** Resolución y DANE bajo el encabezado de la hoja membretada (el NIT ya va en el pie). */

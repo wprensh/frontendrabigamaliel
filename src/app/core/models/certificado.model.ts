@@ -90,6 +90,8 @@ export interface PlantillaCertificado {
    * 'carta' es la hoja membretada vertical de los demás certificados.
    */
   readonly formato: 'carta' | 'diploma';
+  /** Constancia de la Escuela de Artes e Idiomas (logo Enamorarte y firma del director(a)). */
+  readonly escuela?: boolean;
   readonly redactar: (datos: DatosRedaccion) => string;
 }
 
@@ -104,16 +106,16 @@ export const PLANTILLAS_CERTIFICADO: Readonly<
     etiqueta: 'Certificado de estudios',
     descripcion: 'Grado cursado y aprobado en un año lectivo.',
     icono: 'school',
-    titulo: 'CERTIFICADO DE ESTUDIOS',
-    verbo: 'OTORGA EL PRESENTE',
+    titulo: 'CONSTANCIA DE APROBACIÓN / ASISTENCIA',
+    verbo: 'OTORGA LA PRESENTE',
     esEstudiantil: true,
     formato: 'diploma',
-    redactar: (d) =>
-      'Por haber cursado y aprobado en esta institución el grado:\n\n' +
-      `“${grado(d).toUpperCase()}”\n\n` +
-      `Durante el año lectivo ${anio(d)}, de acuerdo con el plan de estudios vigente y el Proyecto Educativo ` +
-      'Institucional (PEI).\n\n' +
-      'Se expide a solicitud de la parte interesada.',
+    escuela: true,
+    redactar: () =>
+      'Por haber cursado y aprobado satisfactoriamente el taller / curso de:\n\n' +
+      '“[NOMBRE DEL CURSO O TALLER]”\n\n' +
+      `Desarrollado en la ${escuela()}, con una intensidad total de [número de horas] horas lectivas, en el periodo ` +
+      'comprendido entre el [fecha de inicio] y el [fecha de finalización].',
   },
   Matricula: {
     etiqueta: 'Constancia de matrícula',
@@ -204,6 +206,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<
     verbo: 'OTORGA LA PRESENTE',
     esEstudiantil: false,
     formato: 'diploma',
+    escuela: true,
     redactar: () =>
       'Por haber cursado y aprobado satisfactoriamente el taller / curso de:\n\n' +
       '“[NOMBRE DEL CURSO O TALLER]”\n\n' +

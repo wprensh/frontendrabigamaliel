@@ -161,11 +161,11 @@ export class CertificadosAdminComponent implements OnInit {
     contenido: ['', [Validators.required, Validators.maxLength(5000)]],
     fechaExpedicion: [new Date(), Validators.required],
     firmanteNombre: [
-      INSTITUCION.rectoria.nombre as string,
+      INSTITUCION.representanteLegal.nombre as string,
       [Validators.required, Validators.maxLength(120)],
     ],
     firmanteCargo: [
-      INSTITUCION.rectoria.cargo as string,
+      INSTITUCION.representanteLegal.cargo as string,
       [Validators.required, Validators.maxLength(80)],
     ],
   });
