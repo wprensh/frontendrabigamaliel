@@ -589,39 +589,9 @@
 
 // Medalla dorada con cintas.
 .d-sello {
-  position: relative;
-  inline-size: 7.4em;
-  block-size: 8.6em;
-
-  .medalla {
-    position: absolute;
-    inset: 0 0 auto;
-    display: grid;
-    place-items: center;
-    inline-size: 7.4em;
-    block-size: 7.4em;
-    border-radius: 50%;
-    background:
-      radial-gradient(circle at 50% 50%, #f6dc8f 0 52%, #c9962e 53% 56%, #f3d27a 57% 64%, transparent 65%),
-      repeating-conic-gradient(from 0deg, #c9962e 0 5deg, #e8bd55 5deg 10deg);
-    box-shadow: 0 0.2em 0.4em rgb(0 0 0 / 18%);
-
-    svg {
-      inline-size: 3.2em;
-      block-size: 3.2em;
-      fill: #3a2a12;
-    }
-  }
-
-  .cintas {
-    position: absolute;
-    inset: auto 0 0;
-    block-size: 4em;
-    background:
-      linear-gradient(105deg, transparent 0 22%, #c9962e 22% 40%, transparent 40%),
-      linear-gradient(75deg, transparent 0 60%, #b5832a 60% 78%, transparent 78%);
-    clip-path: polygon(15% 0, 85% 0, 85% 100%, 72% 85%, 58% 100%, 42% 100%, 28% 85%, 15% 100%);
-  }
+  inline-size: 7.6em;
+  block-size: 8.9em;
+  object-fit: contain;
 }
 
 // ---- Impresión: una hoja carta exacta, sin sombra ----
