@@ -8,7 +8,9 @@ export type TipoCertificado =
   | 'Asistencia'
   | 'Reconocimiento'
   | 'Laboral'
-  | 'Personalizado';
+  | 'Personalizado'
+  | 'Curso'
+  | 'Grado';
 
 export type TipoDocumento =
   | 'RegistroCivil'
@@ -19,13 +21,33 @@ export type TipoDocumento =
   | 'Pasaporte'
   | 'Nuip';
 
-export const TIPOS_DOCUMENTO: readonly { valor: TipoDocumento; etiqueta: string; sigla: string }[] = [
-  { valor: 'TarjetaIdentidad', etiqueta: 'Tarjeta de identidad', sigla: 'T.I.' },
+export const TIPOS_DOCUMENTO: readonly {
+  valor: TipoDocumento;
+  etiqueta: string;
+  sigla: string;
+}[] = [
+  {
+    valor: 'TarjetaIdentidad',
+    etiqueta: 'Tarjeta de identidad',
+    sigla: 'T.I.',
+  },
   { valor: 'RegistroCivil', etiqueta: 'Registro civil', sigla: 'R.C.' },
   { valor: 'Nuip', etiqueta: 'NUIP', sigla: 'NUIP' },
-  { valor: 'CedulaCiudadania', etiqueta: 'Cédula de ciudadanía', sigla: 'C.C.' },
-  { valor: 'CedulaExtranjeria', etiqueta: 'Cédula de extranjería', sigla: 'C.E.' },
-  { valor: 'PermisoProteccionTemporal', etiqueta: 'Permiso por Protección Temporal', sigla: 'PPT' },
+  {
+    valor: 'CedulaCiudadania',
+    etiqueta: 'Cédula de ciudadanía',
+    sigla: 'C.C.',
+  },
+  {
+    valor: 'CedulaExtranjeria',
+    etiqueta: 'Cédula de extranjería',
+    sigla: 'C.E.',
+  },
+  {
+    valor: 'PermisoProteccionTemporal',
+    etiqueta: 'Permiso por Protección Temporal',
+    sigla: 'PPT',
+  },
   { valor: 'Pasaporte', etiqueta: 'Pasaporte', sigla: 'Pasaporte' },
 ];
 
@@ -63,6 +85,11 @@ export interface PlantillaCertificado {
   readonly verbo: string;
   /** Si el documento suele llevar grado y año lectivo. */
   readonly esEstudiantil: boolean;
+  /**
+   * Plantilla de impresión: 'diploma' es la constancia horizontal (cinta azul y sello dorado) de cursos y grados;
+   * 'carta' es la hoja membretada vertical de los demás certificados.
+   */
+  readonly formato: 'carta' | 'diploma';
   readonly redactar: (datos: DatosRedaccion) => string;
 }
 
@@ -70,7 +97,9 @@ export interface PlantillaCertificado {
  * Los textos entre corchetes son datos que el administrador debe completar a mano;
  * el panel no deja expedir el certificado mientras queden corchetes en el texto.
  */
-export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaCertificado>> = {
+export const PLANTILLAS_CERTIFICADO: Readonly<
+  Record<TipoCertificado, PlantillaCertificado>
+> = {
   Estudios: {
     etiqueta: 'Certificado de estudios',
     descripcion: 'Grado cursado y aprobado en un año lectivo.',
@@ -78,6 +107,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CERTIFICADO DE ESTUDIOS',
     verbo: 'CERTIFICA',
     esEstudiantil: true,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, cursó y aprobó en esta institución el grado ${grado(d)} durante el año lectivo ` +
       `${anio(d)}, de acuerdo con el plan de estudios vigente y el Proyecto Educativo Institucional (PEI).\n\n` +
@@ -90,6 +120,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CONSTANCIA DE MATRÍCULA',
     verbo: 'HACE CONSTAR',
     esEstudiantil: true,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, se encuentra matriculado(a) en esta institución en el grado ${grado(d)} para el ` +
       `año lectivo ${anio(d)} y asiste regularmente a clases.\n\n` +
@@ -102,6 +133,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CERTIFICADO DE CONDUCTA',
     verbo: 'CERTIFICA',
     esEstudiantil: true,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, estudiante del grado ${grado(d)} durante el año lectivo ${anio(d)}, observó un ` +
       'comportamiento acorde con el Manual de Convivencia de la institución, demostrando respeto, responsabilidad ' +
@@ -115,6 +147,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'PAZ Y SALVO',
     verbo: 'CERTIFICA',
     esEstudiantil: true,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, estudiante del grado ${grado(d)}, se encuentra a paz y salvo por todo concepto ` +
       'con esta institución (biblioteca, laboratorios, material didáctico y demás dependencias) a la fecha de ' +
@@ -127,6 +160,7 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CONSTANCIA DE ASISTENCIA',
     verbo: 'HACE CONSTAR',
     esEstudiantil: false,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, asistió y participó en [nombre de la actividad], realizada por esta institución ` +
       'el [fecha de la actividad], con una intensidad de [número] horas.',
@@ -138,10 +172,13 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'MENCIÓN DE HONOR',
     verbo: 'OTORGA LA PRESENTE MENCIÓN A',
     esEstudiantil: true,
+    formato: 'carta',
     redactar: (d) =>
       `${nombre(d)}, estudiante del grado ${grado(d)}, como reconocimiento a su excelente desempeño académico, ` +
       `disciplina y espíritu de superación durante el año lectivo ${anio(d)}` +
-      (INSTITUCION.lema ? `, exaltando los valores de nuestro lema institucional “${INSTITUCION.lema}”.` : '.'),
+      (INSTITUCION.lema
+        ? `, exaltando los valores de nuestro lema institucional “${INSTITUCION.lema}”.`
+        : '.'),
   },
   Laboral: {
     etiqueta: 'Certificación laboral',
@@ -150,10 +187,40 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CERTIFICACIÓN LABORAL',
     verbo: 'CERTIFICA',
     esEstudiantil: false,
+    formato: 'carta',
     redactar: (d) =>
       `Que ${identificacion(d)}, labora en esta institución desde el [fecha de ingreso], desempeñando el cargo de ` +
       '[cargo], con vinculación [tipo de vinculación].\n\n' +
       'Se expide a solicitud de la parte interesada.',
+  },
+  Curso: {
+    etiqueta: 'Constancia de curso o taller',
+    descripcion:
+      'Aprobación o asistencia a un curso de la Escuela de Artes e Idiomas.',
+    icono: 'palette',
+    titulo: 'CONSTANCIA DE APROBACIÓN / ASISTENCIA',
+    verbo: 'OTORGA LA PRESENTE',
+    esEstudiantil: false,
+    formato: 'diploma',
+    redactar: () =>
+      'Por haber cursado y aprobado satisfactoriamente el taller / curso de:\n\n' +
+      '“[NOMBRE DEL CURSO O TALLER]”\n\n' +
+      `Desarrollado en la ${escuela()}, con una intensidad total de [número de horas] horas lectivas, en el periodo ` +
+      'comprendido entre el [fecha de inicio] y el [fecha de finalización].',
+  },
+  Grado: {
+    etiqueta: 'Constancia de grado',
+    descripcion: 'Aprobación de un grado (formato horizontal con sello).',
+    icono: 'workspace_premium',
+    titulo: 'CONSTANCIA DE APROBACIÓN DE GRADO',
+    verbo: 'OTORGA LA PRESENTE',
+    esEstudiantil: true,
+    formato: 'diploma',
+    redactar: (d) =>
+      'Por haber cursado y aprobado satisfactoriamente el grado:\n\n' +
+      `“${grado(d).toUpperCase()}”\n\n` +
+      `Durante el año lectivo ${anio(d)}, de acuerdo con el plan de estudios vigente y el Proyecto Educativo ` +
+      `Institucional (PEI) de la ${INSTITUCION.nombre}.`,
   },
   Personalizado: {
     etiqueta: 'Otro certificado (texto libre)',
@@ -162,16 +229,24 @@ export const PLANTILLAS_CERTIFICADO: Readonly<Record<TipoCertificado, PlantillaC
     titulo: 'CERTIFICADO',
     verbo: 'CERTIFICA',
     esEstudiantil: false,
-    redactar: (d) => `Que ${identificacion(d)}, [escriba aquí lo que certifica la institución].`,
+    formato: 'carta',
+    redactar: (d) =>
+      `Que ${identificacion(d)}, [escriba aquí lo que certifica la institución].`,
   },
 };
 
-export const TIPOS_CERTIFICADO: readonly { valor: TipoCertificado; plantilla: PlantillaCertificado }[] = (
-  Object.keys(PLANTILLAS_CERTIFICADO) as TipoCertificado[]
-).map((valor) => ({ valor, plantilla: PLANTILLAS_CERTIFICADO[valor] }));
+export const TIPOS_CERTIFICADO: readonly {
+  valor: TipoCertificado;
+  plantilla: PlantillaCertificado;
+}[] = (Object.keys(PLANTILLAS_CERTIFICADO) as TipoCertificado[]).map(
+  (valor) => ({ valor, plantilla: PLANTILLAS_CERTIFICADO[valor] }),
+);
 
 export function plantillaDe(tipo: string): PlantillaCertificado {
-  return PLANTILLAS_CERTIFICADO[tipo as TipoCertificado] ?? PLANTILLAS_CERTIFICADO.Personalizado;
+  return (
+    PLANTILLAS_CERTIFICADO[tipo as TipoCertificado] ??
+    PLANTILLAS_CERTIFICADO.Personalizado
+  );
 }
 
 export function siglaDocumento(tipo: string): string {
@@ -183,9 +258,15 @@ export function tieneMarcadores(texto: string): boolean {
   return /\[[^\]]*\]/.test(texto);
 }
 
-const nombre = (d: DatosRedaccion): string => d.nombre.trim().toUpperCase() || '[NOMBRE COMPLETO]';
+const escuela = (): string =>
+  [INSTITUCION.escuela.nombre, INSTITUCION.escuela.marca]
+    .filter(Boolean)
+    .join(' ');
+const nombre = (d: DatosRedaccion): string =>
+  d.nombre.trim().toUpperCase() || '[NOMBRE COMPLETO]';
 const grado = (d: DatosRedaccion): string => d.grado.trim() || '[grado]';
-const anio = (d: DatosRedaccion): string => (d.anioLectivo ? String(d.anioLectivo) : '[año lectivo]');
+const anio = (d: DatosRedaccion): string =>
+  d.anioLectivo ? String(d.anioLectivo) : '[año lectivo]';
 const identificacion = (d: DatosRedaccion): string =>
   `${nombre(d)}, identificado(a) con ${siglaDocumento(d.tipoDocumento)} No. ${d.numeroDocumento.trim() || '[número]'}`;
 
@@ -247,6 +328,9 @@ export interface CertificadoFiltro {
  * Lo que necesita la hoja con membrete para dibujarse: un certificado expedido
  * o la vista previa del formulario (sin código todavía).
  */
-export type DocumentoCertificado = Omit<Certificado, 'id' | 'codigo' | 'motivoAnulacion' | 'creadoEn'> & {
+export type DocumentoCertificado = Omit<
+  Certificado,
+  'id' | 'codigo' | 'motivoAnulacion' | 'creadoEn'
+> & {
   readonly codigo: string | null;
 };
