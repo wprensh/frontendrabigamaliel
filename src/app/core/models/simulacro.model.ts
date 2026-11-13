@@ -309,6 +309,26 @@ export interface ResultadoIntento {
     readonly explicacion: string | null;
   }[] | null;
   readonly mensajeRevision: string | null;
+  /** Plan de refuerzo en las áreas y competencias con bajo resultado (vacío si le fue bien en todo). */
+  readonly recomendaciones: readonly RecomendacionRefuerzo[];
+}
+
+/** Recomendación de refuerzo de un área, con las competencias y temas por reforzar. */
+export interface RecomendacionRefuerzo {
+  readonly area: AreaEvaluada;
+  readonly porcentaje: number;
+  /** Nivel de desempeño aproximado (escala de cuatro niveles del ICFES). */
+  readonly nivel: string;
+  readonly prioridad: 'Alta' | 'Media' | 'Baja';
+  readonly mensaje: string;
+  readonly competencias: readonly {
+    readonly competencia: string;
+    readonly porcentaje: number;
+    readonly temas: readonly string[];
+    readonly estrategia: string;
+  }[];
+  /** Número de las preguntas que falló en esa área. */
+  readonly preguntasFalladas: readonly number[];
 }
 
 /**

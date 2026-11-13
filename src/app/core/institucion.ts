@@ -28,9 +28,17 @@ export interface DatosInstitucion {
     readonly codigoDane: string;
     readonly nit: string;
   };
-  readonly redes: { readonly facebook: string; readonly instagram: string; readonly youtube: string };
+  readonly redes: {
+    readonly facebook: string;
+    readonly instagram: string;
+    readonly youtube: string;
+  };
   /** Textos del PEI para la página Nosotros. Cada elemento de `historia` es un párrafo. */
-  readonly pei: { readonly historia: readonly string[]; readonly mision: string; readonly vision: string };
+  readonly pei: {
+    readonly historia: readonly string[];
+    readonly mision: string;
+    readonly vision: string;
+  };
 }
 
 export const INSTITUCION: DatosInstitucion = {
@@ -58,20 +66,31 @@ export const INSTITUCION: DatosInstitucion = {
   },
   pei: {
     historia: [], // PENDIENTE
-    mision: '', // PENDIENTE
-    vision: '', // PENDIENTE
+    mision:
+      'La Fundación Educativa Rabí Gamaliel tiene como misión promover el desarrollo integral de las personas y las comunidades mediante la formulación, gestión y ejecución de programas, proyectos y procesos educativos, sociales, culturales, científicos, artísticos y de formación para el trabajo y el desarrollo humano. Orienta su labor bajo principios éticos, morales y espirituales inspirados en las Sagradas Escrituras, fortaleciendo las competencias ciudadanas, axiológicas, laborales y académicas, la formación de líderes con vocación de servicio, la investigación, la convivencia pacífica, los derechos humanos y la transformación social, en articulación con instituciones y organizaciones del ámbito local, nacional e internacional.',
+    vision:
+      'Para el año 2035, la Fundación Educativa Rabí Gamaliel se proyecta como una organización educativa y social reconocida por su contribución al desarrollo integral, la transformación cultural y el fortalecimiento de las comunidades, mediante una educación de calidad con fundamento ético y espiritual. Será referente en la formación de líderes competentes y comprometidos con el servicio a la sociedad, en la promoción del talento humano, la investigación, la innovación educativa, la cultura de paz, los derechos humanos y el rescate de los valores y expresiones culturales de las regiones, consolidando alianzas estratégicas que amplíen el impacto y la sostenibilidad de sus programas y proyectos a nivel nacional e internacional.',
   },
 };
 
 /** Une con un separador solo las partes que tienen valor: unirDatos(' · ', 'a', '', 'b') → 'a · b'. */
-export function unirDatos(separador: string, ...partes: (string | null | undefined)[]): string {
-  return partes.filter((p): p is string => !!p && p.trim() !== '').join(separador);
+export function unirDatos(
+  separador: string,
+  ...partes: (string | null | undefined)[]
+): string {
+  return partes
+    .filter((p): p is string => !!p && p.trim() !== '')
+    .join(separador);
 }
 
 /** "DANE 123 · NIT 456" con lo que haya (vacío si no hay ninguno). */
 export function lineaLegal(): string {
   const m = INSTITUCION.membrete;
-  return unirDatos(' · ', m.codigoDane && `DANE ${m.codigoDane}`, m.nit && `NIT ${m.nit}`);
+  return unirDatos(
+    ' · ',
+    m.codigoDane && `DANE ${m.codigoDane}`,
+    m.nit && `NIT ${m.nit}`,
+  );
 }
 
 /** "Ciudad – Departamento" con lo que haya. */
@@ -95,5 +114,10 @@ export const NAVEGACION: readonly EnlaceNavegacion[] = [
   { ruta: '/admisiones', etiqueta: 'Admisiones', icono: 'how_to_reg' },
   { ruta: '/servicios', etiqueta: 'Servicios', icono: 'volunteer_activism' },
   { ruta: '/contacto', etiqueta: 'Contacto', icono: 'forum' },
-  { ruta: '/campus', etiqueta: 'Campus Virtual', icono: 'laptop_chromebook', corta: 'Campus' },
+  {
+    ruta: '/campus',
+    etiqueta: 'Campus Virtual',
+    icono: 'laptop_chromebook',
+    corta: 'Campus',
+  },
 ];
