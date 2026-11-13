@@ -28,6 +28,9 @@
           }
         }
       </div>
+      @if (esCurso()) {
+        <img class="d-logo-escuela" src="img/enamorarte.webp" alt="Logo de {{ institucion.escuela.nombre }} {{ institucion.escuela.marca }}" />
+      }
     </header>
     <div class="d-filete" aria-hidden="true"></div>
 

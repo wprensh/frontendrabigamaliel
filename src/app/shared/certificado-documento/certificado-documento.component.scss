@@ -371,6 +371,14 @@
   object-fit: contain;
 }
 
+.d-logo-escuela {
+  position: absolute;
+  inset-inline-end: 1em;
+  inline-size: 9.4em;
+  block-size: 8.6em;
+  object-fit: contain;
+}
+
 .d-institucion {
   text-align: center;
 
@@ -571,8 +579,8 @@
 .d-qr-esquina {
   position: absolute;
   z-index: 1;
-  inset: 2.5em 2.6em auto auto;
-  inline-size: 7.5em;
+  inset: auto auto 2.4em 2.8em;
+  inline-size: 6.2em;
 
   .verificacion {
     flex-direction: column;
@@ -655,4 +663,10 @@
     font-size: 16px;
     box-shadow: none;
   }
+}
+
+// En cursos el QR va en la esquina inferior izquierda: se abre espacio a ambos lados
+// para que las firmas no lo toquen y el sello siga centrado.
+.diploma:has(.d-qr-esquina) .d-firmas {
+  padding-inline: 6.5em;
 }
