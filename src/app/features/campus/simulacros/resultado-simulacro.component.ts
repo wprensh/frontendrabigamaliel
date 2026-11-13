@@ -59,6 +59,49 @@ import { EncabezadoCampusComponent } from '../compartido/encabezado-campus.compo
           }
         </section>
 
+        <!-- Plan de refuerzo: áreas y competencias con bajo resultado -->
+        <section class="tarjeta refuerzo" aria-labelledby="titulo-refuerzo">
+          <h2 id="titulo-refuerzo">
+            <mat-icon aria-hidden="true">tips_and_updates</mat-icon>
+            Recomendaciones de refuerzo
+          </h2>
+          @for (rec of r.recomendaciones; track rec.area) {
+            <article class="recomendacion" [class]="'prioridad-' + rec.prioridad.toLowerCase()">
+              <header>
+                <h3>{{ areas[rec.area] }}</h3>
+                <span class="nivel">{{ rec.nivel }} · {{ rec.porcentaje | number: '1.0-0' }} %</span>
+                <span class="prioridad">Prioridad {{ rec.prioridad.toLowerCase() }}</span>
+              </header>
+              <p>{{ rec.mensaje }}</p>
+              @for (c of rec.competencias; track c.competencia) {
+                <div class="competencia">
+                  <p class="nombre-competencia">
+                    <strong>{{ c.competencia }}</strong> · {{ c.porcentaje | number: '1.0-0' }} % de aciertos
+                  </p>
+                  <p class="etiqueta-temas">Temas para repasar:</p>
+                  <ul>
+                    @for (t of c.temas; track t) {
+                      <li>{{ t }}</li>
+                    }
+                  </ul>
+                  <p class="estrategia"><mat-icon aria-hidden="true">lightbulb</mat-icon> {{ c.estrategia }}</p>
+                </div>
+              }
+              @if (rec.preguntasFalladas.length) {
+                <p class="falladas">
+                  Repasa {{ rec.preguntasFalladas.length === 1 ? 'la pregunta' : 'las preguntas' }}
+                  {{ rec.preguntasFalladas.join(', ') }}.
+                </p>
+              }
+            </article>
+          } @empty {
+            <p class="felicitacion">
+              <mat-icon aria-hidden="true">emoji_events</mat-icon>
+              ¡Excelente trabajo! Obtuviste 60 % o más en todas las áreas y competencias. Sigue practicando para llegar al nivel avanzado.
+            </p>
+          }
+        </section>
+
         <section class="tarjeta" aria-labelledby="titulo-areas">
           <h2 id="titulo-areas">Por área</h2>
           <app-barras [barras]="barrasArea()" />
@@ -169,6 +212,114 @@ import { EncabezadoCampusComponent } from '../compartido/encabezado-campus.compo
         strong {
           color: var(--rg-amarillo);
         }
+      }
+    }
+
+    .refuerzo {
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+
+    .recomendacion {
+      padding: 0.9rem 1rem;
+      margin-block-end: 0.75rem;
+      border: 1px solid var(--rg-borde);
+      border-inline-start: 5px solid var(--rg-amarillo);
+      border-radius: 10px;
+      background: var(--rg-superficie-suave);
+
+      &.prioridad-alta {
+        border-inline-start-color: var(--rg-rojo);
+      }
+
+      &.prioridad-baja {
+        border-inline-start-color: var(--rg-azul-medio);
+      }
+
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.35rem 0.75rem;
+      }
+
+      h3 {
+        margin: 0;
+        color: var(--rg-azul);
+        font-size: 1.05rem;
+      }
+
+      p {
+        margin: 0.5rem 0 0;
+      }
+    }
+
+    .nivel {
+      color: var(--rg-texto-suave);
+      font-size: 0.85rem;
+    }
+
+    .prioridad {
+      margin-inline-start: auto;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: var(--rg-dorado-suave);
+      color: var(--rg-dorado-texto);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .prioridad-alta .prioridad {
+      background: #fde2e5;
+      color: var(--rg-rojo);
+    }
+
+    .competencia {
+      margin-block-start: 0.75rem;
+      padding-block-start: 0.6rem;
+      border-block-start: 1px dashed var(--rg-borde);
+
+      ul {
+        margin: 0.25rem 0 0;
+        padding-inline-start: 1.25rem;
+      }
+    }
+
+    .etiqueta-temas {
+      color: var(--rg-texto-suave);
+      font-size: 0.85rem;
+    }
+
+    .estrategia {
+      display: flex;
+      gap: 0.4rem;
+      align-items: flex-start;
+
+      mat-icon {
+        flex: none;
+        color: var(--rg-dorado-texto);
+        font-size: 20px;
+        inline-size: 20px;
+        block-size: 20px;
+      }
+    }
+
+    .falladas {
+      color: var(--rg-texto-suave);
+      font-size: 0.85rem;
+    }
+
+    .felicitacion {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+
+      mat-icon {
+        color: var(--rg-dorado-texto);
       }
     }
 

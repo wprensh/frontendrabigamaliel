@@ -1,14 +1,16 @@
-<h2 mat-dialog-title>{{ editando ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+<h2 mat-dialog-title>{{ editando ? "Editar usuario" : "Nuevo usuario" }}</h2>
 <form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
   <mat-dialog-content>
     <div class="datos">
       <mat-form-field>
         <mat-label>Nombre completo</mat-label>
         <input matInput formControlName="nombreCompleto" maxlength="120" />
-        @if (formulario.controls.nombreCompleto.hasError('required')) {
+        @if (formulario.controls.nombreCompleto.hasError("required")) {
           <mat-error>El nombre es obligatorio.</mat-error>
-        } @else if (formulario.controls.nombreCompleto.hasError('servidor')) {
-          <mat-error>{{ formulario.controls.nombreCompleto.getError('servidor') }}</mat-error>
+        } @else if (formulario.controls.nombreCompleto.hasError("servidor")) {
+          <mat-error>{{
+            formulario.controls.nombreCompleto.getError("servidor")
+          }}</mat-error>
         }
       </mat-form-field>
 
@@ -16,13 +18,23 @@
         <mat-label>Correo (opcional)</mat-label>
         <input matInput type="email" formControlName="correo" maxlength="150" />
         @if (formulario.controls.correo.invalid) {
-          <mat-error>{{ formulario.controls.correo.getError('servidor') ?? 'El correo no es válido.' }}</mat-error>
+          <mat-error>{{
+            formulario.controls.correo.getError("servidor") ??
+              "El correo no es válido."
+          }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Usuario</mat-label>
-        <input matInput formControlName="nombreUsuario" maxlength="50" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        <input
+          matInput
+          formControlName="nombreUsuario"
+          maxlength="50"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+        />
         @if (editando) {
           <mat-hint>El nombre de usuario no se puede cambiar.</mat-hint>
         } @else {
@@ -30,7 +42,10 @@
         }
         @if (formulario.controls.nombreUsuario.invalid) {
           <mat-error>
-            {{ formulario.controls.nombreUsuario.getError('servidor') ?? 'De 3 a 50 letras sin tildes, números, puntos o guiones.' }}
+            {{
+              formulario.controls.nombreUsuario.getError("servidor") ??
+                "De 3 a 50 letras sin tildes, números, puntos o guiones."
+            }}
           </mat-error>
         }
       </mat-form-field>
@@ -38,17 +53,30 @@
       @if (!editando) {
         <mat-form-field>
           <mat-label>Contraseña inicial</mat-label>
-          <input matInput type="password" formControlName="clave" autocomplete="new-password" />
+          <input
+            matInput
+            type="password"
+            formControlName="clave"
+            autocomplete="new-password"
+          />
           <mat-hint>Mínimo 8 caracteres, con letras y números.</mat-hint>
           @if (formulario.controls.clave.invalid) {
-            <mat-error>{{ formulario.controls.clave.getError('servidor') ?? 'Mínimo 8 caracteres, con letras y números.' }}</mat-error>
+            <mat-error>{{
+              formulario.controls.clave.getError("servidor") ??
+                "Mínimo 8 caracteres, con letras y números."
+            }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>Repita la contraseña</mat-label>
-          <input matInput type="password" formControlName="confirmacion" autocomplete="new-password" />
-          @if (formulario.controls.confirmacion.hasError('noCoincide')) {
+          <input
+            matInput
+            type="password"
+            formControlName="confirmacion"
+            autocomplete="new-password"
+          />
+          @if (formulario.controls.confirmacion.hasError("noCoincide")) {
             <mat-error>Las contraseñas no coinciden.</mat-error>
           }
         </mat-form-field>
@@ -56,21 +84,34 @@
     </div>
 
     <div class="interruptores">
-      <mat-slide-toggle formControlName="esSuperAdministrador">
-        Superadministrador
-        <small>Todos los permisos en todos los módulos, incluidos los futuros.</small>
-      </mat-slide-toggle>
+      <!-- Solo un superadministrador puede crear o asignar superadministradores -->
+      @if (soyAdministradorGeneral()) {
+        <mat-slide-toggle formControlName="esSuperAdministrador">
+          Superadministrador
+          <small
+            >Todos los permisos en todos los módulos, incluidos los
+            futuros.</small
+          >
+        </mat-slide-toggle>
+      }
       @if (editando) {
         <mat-slide-toggle formControlName="activo">
           Usuario activo
-          <small>{{ esUnoMismo ? 'No puede desactivar su propio usuario.' : 'Si se desactiva, no puede iniciar sesión.' }}</small>
+          <small>{{
+            esUnoMismo
+              ? "No puede desactivar su propio usuario."
+              : "Si se desactiva, no puede iniciar sesión."
+          }}</small>
         </mat-slide-toggle>
       }
     </div>
 
     <section class="perfiles" aria-labelledby="titulo-perfiles">
       <h3 id="titulo-perfiles">Perfil</h3>
-      <p class="nota">Elija un perfil para marcar sus permisos de una vez; luego puede ajustar las casillas.</p>
+      <p class="nota">
+        Elija un perfil para marcar sus permisos de una vez; luego puede ajustar
+        las casillas.
+      </p>
       <div class="opciones-perfil">
         @for (perfil of perfiles; track perfil.nombre) {
           <button
@@ -112,7 +153,9 @@
                     [checked]="tiene(modulo, accion)"
                     [disabled]="esSuper()"
                     (change)="alternar(modulo, accion, $event.checked)"
-                    [aria-label]="modulo.acciones[accion] + ' en ' + modulo.etiqueta"
+                    [aria-label]="
+                      modulo.acciones[accion] + ' en ' + modulo.etiqueta
+                    "
                   >
                     @if (modulo.acciones[accion] !== accion) {
                       <small>{{ modulo.acciones[accion] }}</small>
@@ -133,11 +176,17 @@
           }
         </tbody>
       </table>
-      <p class="nota">Crear, editar o eliminar incluyen ver. En Certificaciones, “Eliminar” es anular un certificado.</p>
+      <p class="nota">
+        Crear, editar o eliminar incluyen ver. En Certificaciones, “Eliminar” es
+        anular un certificado.
+      </p>
     </fieldset>
 
     @if (sinPermisos()) {
-      <p class="aviso">Sin permisos el usuario podrá iniciar sesión, pero no verá ningún módulo.</p>
+      <p class="aviso">
+        Sin permisos el usuario podrá iniciar sesión, pero no verá ningún
+        módulo.
+      </p>
     }
     @if (error()) {
       <p class="aviso-error" role="alert">{{ error() }}</p>
@@ -146,8 +195,19 @@
 
   <mat-dialog-actions align="end">
     <button mat-button type="button" mat-dialog-close>Cancelar</button>
-    <button mat-flat-button class="boton-azul" type="submit" [disabled]="guardando()">
-      {{ guardando() ? 'Guardando...' : editando ? 'Guardar cambios' : 'Crear usuario' }}
+    <button
+      mat-flat-button
+      class="boton-azul"
+      type="submit"
+      [disabled]="guardando()"
+    >
+      {{
+        guardando()
+          ? "Guardando..."
+          : editando
+            ? "Guardar cambios"
+            : "Crear usuario"
+      }}
     </button>
   </mat-dialog-actions>
 </form>
