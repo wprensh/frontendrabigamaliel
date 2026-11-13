@@ -38,8 +38,8 @@
     <h1 class="d-cinta"><span>{{ certificado().titulo || 'CONSTANCIA' }}</span></h1>
 
     <div class="d-cuerpo">
-      <span class="laurel laurel-izq" aria-hidden="true"></span>
-      <span class="laurel laurel-der" aria-hidden="true"></span>
+      <img class="laurel laurel-izq" src="img/olivo.webp" alt="" aria-hidden="true" />
+      <img class="laurel laurel-der" src="img/olivo.webp" alt="" aria-hidden="true" />
       <p class="d-beneficiario">A: {{ (certificado().nombreBeneficiario || '[Nombres y apellidos]').toUpperCase() }}</p>
       <p class="d-documento">
         Documento de identidad: {{ sigla() }} No. {{ certificado().numeroDocumento || '[número]' }}

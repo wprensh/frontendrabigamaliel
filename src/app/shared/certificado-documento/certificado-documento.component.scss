@@ -468,34 +468,22 @@
   }
 }
 
-// Ramas de laurel dibujadas con hojas (elipses doradas).
+// Ramas de olivo tomadas de la plantilla original.
 .laurel {
   position: absolute;
-  inset-block-start: 1.2em;
-  inline-size: 5.4em;
-  block-size: 10em;
-  opacity: 0.85;
-  background:
-    radial-gradient(ellipse 0.55em 1.1em at 50% 8%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 30% 22%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 70% 22%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 22% 40%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 78% 40%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 22% 58%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 78% 58%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 30% 76%, var(--oro-claro) 98%, transparent),
-    radial-gradient(ellipse 0.55em 1.1em at 70% 76%, var(--oro-claro) 98%, transparent),
-    linear-gradient(var(--oro-claro), var(--oro-claro)) 50% 10% / 0.12em 85% no-repeat;
+  inset-block-start: 0.4em;
+  inline-size: 5.6em;
+  block-size: 12.2em;
+  object-fit: contain;
 }
 
 .laurel-izq {
-  inset-inline-start: 0.4em;
-  rotate: -12deg;
+  inset-inline-start: 0.6em;
 }
 
 .laurel-der {
-  inset-inline-end: 0.4em;
-  rotate: 12deg;
+  inset-inline-end: 0.6em;
+  transform: scaleX(-1);
 }
 
 .d-beneficiario {
