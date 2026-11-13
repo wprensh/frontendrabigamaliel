@@ -1,0 +1,389 @@
+import { Routes } from '@angular/router';
+
+import { requierePermiso, requiereSesion, requiereSesionCampus } from './core/guards/permiso.guard';
+
+/**
+ * Cada sección se carga de forma perezosa (lazy loading) con `loadComponent`:
+ * el navegador solo descarga el código de la plantilla que el usuario visita.
+ */
+export const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'inicio' },
+  {
+    path: 'inicio',
+    title: 'Inicio',
+    loadComponent: () => import('./features/inicio/inicio.component').then((m) => m.InicioComponent),
+  },
+  {
+    path: 'nosotros',
+    title: 'Nosotros',
+    loadComponent: () => import('./features/nosotros/nosotros.component').then((m) => m.NosotrosComponent),
+  },
+  {
+    path: 'academico',
+    title: 'Académico',
+    loadComponent: () => import('./features/academico/academico.component').then((m) => m.AcademicoComponent),
+  },
+  {
+    path: 'admisiones',
+    title: 'Admisiones',
+    loadComponent: () => import('./features/admisiones/admisiones.component').then((m) => m.AdmisionesComponent),
+  },
+  {
+    path: 'servicios',
+    title: 'Servicios',
+    loadComponent: () => import('./features/servicios/servicios.component').then((m) => m.ServiciosComponent),
+  },
+  {
+    path: 'contacto',
+    title: 'Contacto',
+    loadComponent: () => import('./features/contacto/contacto.component').then((m) => m.ContactoComponent),
+  },
+  {
+    path: 'campus',
+    title: 'Campus Virtual',
+    loadComponent: () => import('./features/campus/campus.component').then((m) => m.CampusComponent),
+  },
+  {
+    path: 'campus/elecciones/:id',
+    title: 'Tarjetón electoral',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () => import('./features/campus/tarjeton.component').then((m) => m.TarjetonComponent),
+  },
+  {
+    path: 'campus/elecciones/:id/resultados',
+    title: 'Resultados de la elección',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/resultados-campus.component').then((m) => m.ResultadosCampusComponent),
+  },
+  // ---- Plataforma académica del campus (estudiantes, acudientes y docentes) ----
+  {
+    path: 'campus/boletines',
+    title: 'Boletines',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/boletines-campus.component').then((m) => m.BoletinesCampusComponent),
+  },
+  {
+    path: 'campus/horario',
+    title: 'Horario de clases',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/horario-campus.component').then((m) => m.HorarioCampusComponent),
+  },
+  {
+    path: 'campus/asistencia',
+    title: 'Asistencia',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/asistencia-campus.component').then((m) => m.AsistenciaCampusComponent),
+  },
+  {
+    path: 'campus/observador',
+    title: 'Observador del estudiante',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/observador-campus.component').then((m) => m.ObservadorCampusComponent),
+  },
+  {
+    path: 'campus/circulares',
+    title: 'Circulares',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/circulares-campus.component').then((m) => m.CircularesCampusComponent),
+  },
+  {
+    path: 'campus/calendario',
+    title: 'Calendario escolar',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/calendario-campus.component').then((m) => m.CalendarioCampusComponent),
+  },
+  {
+    path: 'campus/carnet',
+    title: 'Carné digital',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/academico/carnet-campus.component').then((m) => m.CarnetCampusComponent),
+  },
+  {
+    path: 'campus/simulacros',
+    title: 'Simulacros Saber',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/simulacros/simulacros-campus.component').then((m) => m.SimulacrosCampusComponent),
+  },
+  {
+    path: 'campus/simulacros/:id/presentar',
+    title: 'Presentar simulacro',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/simulacros/presentar-simulacro.component').then((m) => m.PresentarSimulacroComponent),
+  },
+  {
+    path: 'campus/simulacros/:id/resultado',
+    title: 'Resultado del simulacro',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/simulacros/resultado-simulacro.component').then((m) => m.ResultadoSimulacroComponent),
+  },
+  {
+    path: 'campus/simulacros/:id/resultados',
+    title: 'Resultados del simulacro',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/simulacros/resultados-docente.component').then((m) => m.ResultadosDocenteComponent),
+  },
+  {
+    path: 'campus/docente',
+    title: 'Mis clases',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () => import('./features/campus/docente/mis-clases.component').then((m) => m.MisClasesComponent),
+  },
+  {
+    path: 'campus/docente/:asignacionId',
+    title: 'Clase',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/docente/clase-docente.component').then((m) => m.ClaseDocenteComponent),
+  },
+  {
+    path: 'campus/aula',
+    title: 'Aula virtual',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () => import('./features/campus/aula/aula-campus.component').then((m) => m.AulaCampusComponent),
+  },
+  {
+    path: 'campus/recuperaciones',
+    title: 'Recuperaciones',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/recuperaciones/recuperaciones-campus.component').then((m) => m.RecuperacionesCampusComponent),
+  },
+  {
+    path: 'campus/mensajes',
+    title: 'Mensajes',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/mensajes/mensajes-campus.component').then((m) => m.MensajesCampusComponent),
+  },
+  {
+    path: 'campus/planeador',
+    title: 'Planeador de clases',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () => import('./features/campus/planeador/planeador.component').then((m) => m.PlaneadorComponent),
+  },
+  {
+    path: 'campus/docente/:asignacionId/aula',
+    title: 'Aula virtual de la clase',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () => import('./features/campus/aula/aula-docente.component').then((m) => m.AulaDocenteComponent),
+  },
+  {
+    path: 'campus/docente/:asignacionId/recuperaciones',
+    title: 'Recuperaciones de la clase',
+    canActivate: [requiereSesionCampus],
+    loadComponent: () =>
+      import('./features/campus/recuperaciones/recuperaciones-docente.component').then((m) => m.RecuperacionesDocenteComponent),
+  },
+  // ---- Panel administrativo: inicio de sesión y un módulo por ruta, según los permisos del usuario ----
+  {
+    path: 'admin/login',
+    title: 'Iniciar sesión',
+    loadComponent: () => import('./features/admin/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    // Todas las páginas del panel comparten el menú lateral agrupado por área.
+    path: 'admin',
+    canActivate: [requiereSesion],
+    loadComponent: () => import('./shared/barra-admin/panel-admin.component').then((m) => m.PanelAdminComponent),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        title: 'Panel administrativo',
+        loadComponent: () => import('./features/admin/panel/panel.component').then((m) => m.PanelComponent),
+      },
+      {
+        path: 'noticias',
+        title: 'Administrar noticias',
+        canActivate: [requierePermiso('Noticias')],
+        loadComponent: () =>
+          import('./features/admin/noticias-admin/noticias-admin.component').then((m) => m.NoticiasAdminComponent),
+      },
+      {
+        path: 'certificados',
+        title: 'Certificaciones',
+        canActivate: [requierePermiso('Certificados')],
+        loadComponent: () =>
+          import('./features/admin/certificados-admin/certificados-admin.component').then(
+            (m) => m.CertificadosAdminComponent,
+          ),
+      },
+      {
+        path: 'usuarios',
+        title: 'Usuarios',
+        canActivate: [requierePermiso('Usuarios')],
+        loadComponent: () =>
+          import('./features/admin/usuarios-admin/usuarios-admin.component').then((m) => m.UsuariosAdminComponent),
+      },
+      {
+        path: 'elecciones',
+        title: 'Elecciones escolares',
+        canActivate: [requierePermiso('Elecciones')],
+        loadComponent: () =>
+          import('./features/admin/elecciones-admin/elecciones-admin.component').then((m) => m.EleccionesAdminComponent),
+      },
+      {
+        path: 'elecciones/:id',
+        title: 'Elección',
+        canActivate: [requierePermiso('Elecciones')],
+        loadComponent: () =>
+          import('./features/admin/elecciones-admin/eleccion-detalle.component').then((m) => m.EleccionDetalleComponent),
+      },
+      {
+        path: 'comunidad',
+        title: 'Estudiantes y docentes',
+        canActivate: [requierePermiso('Campus')],
+        loadComponent: () =>
+          import('./features/admin/comunidad-admin/comunidad-admin.component').then((m) => m.ComunidadAdminComponent),
+      },
+      {
+        path: 'indicadores',
+        title: 'Tablero del rector',
+        canActivate: [requierePermiso('Indicadores')],
+        loadComponent: () =>
+          import('./features/admin/indicadores-admin/indicadores-admin.component').then((m) => m.IndicadoresAdminComponent),
+      },
+      {
+        path: 'alertas',
+        title: 'Alerta temprana',
+        canActivate: [requierePermiso('Indicadores')],
+        loadComponent: () => import('./features/admin/alertas-admin/alertas-admin.component').then((m) => m.AlertasAdminComponent),
+      },
+      {
+        path: 'planeacion',
+        title: 'Planeación académica',
+        canActivate: [requierePermiso('Planeacion')],
+        loadComponent: () =>
+          import('./features/admin/planeacion-admin/planeacion-admin.component').then((m) => m.PlaneacionAdminComponent),
+      },
+      {
+        path: 'evaluacion',
+        title: 'Comisión de evaluación y promoción',
+        canActivate: [requierePermiso('Evaluacion')],
+        loadComponent: () =>
+          import('./features/admin/evaluacion-admin/evaluacion-admin.component').then((m) => m.EvaluacionAdminComponent),
+      },
+      {
+        path: 'reportes',
+        title: 'Reportes oficiales',
+        canActivate: [requierePermiso('Reportes')],
+        loadComponent: () => import('./features/admin/reportes-admin/reportes-admin.component').then((m) => m.ReportesAdminComponent),
+      },
+      {
+        path: 'academico',
+        title: 'Gestión académica',
+        canActivate: [requierePermiso('Academico')],
+        loadComponent: () =>
+          import('./features/admin/academico-admin/academico-admin.component').then((m) => m.AcademicoAdminComponent),
+      },
+      {
+        path: 'horarios',
+        title: 'Horarios',
+        canActivate: [requierePermiso('Academico')],
+        loadComponent: () =>
+          import('./features/admin/horarios-admin/horarios-admin.component').then((m) => m.HorariosAdminComponent),
+      },
+      {
+        path: 'convivencia',
+        title: 'Asistencia y observador',
+        canActivate: [requierePermiso('Convivencia')],
+        loadComponent: () =>
+          import('./features/admin/convivencia-admin/convivencia-admin.component').then((m) => m.ConvivenciaAdminComponent),
+      },
+      {
+        path: 'simulacros',
+        title: 'Simulador Saber',
+        canActivate: [requierePermiso('Simulacros')],
+        loadComponent: () =>
+          import('./features/admin/simulacros-admin/simulacros-admin.component').then((m) => m.SimulacrosAdminComponent),
+      },
+      {
+        path: 'banco-preguntas',
+        title: 'Banco de preguntas',
+        canActivate: [requierePermiso('Simulacros')],
+        loadComponent: () =>
+          import('./features/admin/simulacros-admin/banco-preguntas.component').then((m) => m.BancoPreguntasComponent),
+      },
+      {
+        path: 'simulacros/:id',
+        title: 'Simulacro',
+        canActivate: [requierePermiso('Simulacros')],
+        loadComponent: () =>
+          import('./features/admin/simulacros-admin/simulacro-detalle.component').then((m) => m.SimulacroDetalleComponent),
+      },
+      {
+        path: 'circulares',
+        title: 'Circulares',
+        canActivate: [requierePermiso('Circulares')],
+        data: { seccion: 'circulares' },
+        loadComponent: () =>
+          import('./features/admin/comunicaciones-admin/comunicaciones-admin.component').then(
+            (m) => m.ComunicacionesAdminComponent,
+          ),
+      },
+      {
+        path: 'calendario',
+        title: 'Calendario escolar',
+        canActivate: [requierePermiso('Calendario')],
+        data: { seccion: 'calendario' },
+        loadComponent: () =>
+          import('./features/admin/comunicaciones-admin/comunicaciones-admin.component').then(
+            (m) => m.ComunicacionesAdminComponent,
+          ),
+      },
+      {
+        path: 'carnes',
+        title: 'Carné con QR',
+        canActivate: [requierePermiso('Carnets')],
+        loadComponent: () => import('./features/admin/carnes-admin/carnes-admin.component').then((m) => m.CarnesAdminComponent),
+      },
+      {
+        path: 'admisiones',
+        title: 'Pre-matrícula en línea',
+        canActivate: [requierePermiso('Admisiones')],
+        loadComponent: () =>
+          import('./features/admin/admisiones-admin/admisiones-admin.component').then((m) => m.AdmisionesAdminComponent),
+      },
+    ],
+  },
+  {
+    // Verificación pública del carné; el QR de cada carné apunta a /carnet/{codigo}.
+    path: 'carnet/:codigo',
+    title: 'Verificar carné',
+    loadComponent: () => import('./features/carnet/verificar-carnet.component').then((m) => m.VerificarCarnetComponent),
+  },
+  {
+    path: 'carnet',
+    title: 'Verificar carné',
+    loadComponent: () => import('./features/carnet/verificar-carnet.component').then((m) => m.VerificarCarnetComponent),
+  },
+  {
+    path: 'calendario',
+    title: 'Calendario escolar',
+    loadComponent: () => import('./features/calendario/calendario.component').then((m) => m.CalendarioComponent),
+  },
+  {
+    // Verificación pública; el QR de cada certificado apunta a /verificar/{codigo}.
+    path: 'verificar/:codigo',
+    title: 'Verificar certificado',
+    loadComponent: () => import('./features/verificar/verificar.component').then((m) => m.VerificarComponent),
+  },
+  {
+    path: 'verificar',
+    title: 'Verificar certificado',
+    loadComponent: () => import('./features/verificar/verificar.component').then((m) => m.VerificarComponent),
+  },
+  { path: '**', redirectTo: 'inicio' },
+];

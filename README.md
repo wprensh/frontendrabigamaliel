@@ -1,0 +1,119 @@
+# Frontend · I.E. Rabí Gamaliel
+
+Sitio web, panel administrativo y campus virtual de la **Institución Educativa Rabí Gamaliel**.
+Construido con **Angular 19** (Standalone Components, Control Flow `@if`/`@for`, Signals) y **Angular Material 19**.
+
+Backend: [backendrabigamaliel](https://github.com/wprensh/backendrabigamaliel) (.NET 9 + PostgreSQL)
+
+## Plantillas incluidas
+
+Plantillas del sitio (heredadas de la plataforma base, con la identidad de Rabí Gamaliel):
+
+| Ruta | Plantilla | Datos |
+|---|---|---|
+| `/inicio` | Portada, valores, noticias recientes y eventos próximos | API (`GET /api/noticias`) |
+| `/nosotros` | 1. Nosotros & Misión Institucional | Estático |
+| `/academico` | 2. Propuesta Académica & Niveles | Estático |
+| `/admisiones` | 3. Admisiones & Inscripción de Cupos | Estático |
+| `/servicios` | 4. Servicios Institucionales & Bienestar | Estático |
+| `/contacto` | 5. Contacto & Atención Ciudadana (formulario PQRS) | API (`POST /api/pqrs`) |
+| `/campus` | 6. Campus Virtual & Plataforma Académica | Solo interfaz (sin autenticación aún) |
+| `/admin/login` | Inicio de sesión del panel (y configuración inicial del primer superadministrador) | API (`/api/auth`) |
+| `/admin` | Panel: los módulos que el usuario puede usar | API (`GET /api/auth/perfil`) |
+| `/admin/usuarios` | Usuarios del panel y sus permisos Ver/Crear/Editar/Eliminar por módulo | API (`/api/usuarios`) |
+| `/admin/noticias` | Panel administrativo: tabla Material + formulario reactivo (CRUD) | API (CRUD `/api/noticias`) |
+| `/admin/certificados` | Certificaciones: expedición con membrete y escudo, vista previa, impresión/PDF, registro y anulación | API (`/api/certificados`) |
+| `/verificar/:codigo` | Verificación pública de certificados (destino del QR impreso) | API (`GET /api/certificados/verificar/{codigo}`) |
+
+## Estructura
+
+```
+src/
+├── app/
+│   ├── core/                       # Singleton: modelos, servicios HTTP, utilidades
+│   │   ├── models/                 #   Noticia, PQRS, PagedResult, ProblemDetails
+│   │   ├── services/               #   NoticiasService (estado con Signals), PqrsService
+│   │   ├── utils/                  #   Fechas (DateOnly) y errores HTTP → mensajes/validaciones
+│   │   ├── institucion.ts          #   Datos institucionales y menú de navegación
+│   │   ├── paginador-intl.ts       #   Textos del paginador en español
+│   │   └── titulo-pagina.strategy.ts
+│   ├── layout/                     # Encabezado y pie de página del sitio
+│   ├── shared/                     # Componentes reutilizables (escudo, encabezado de sección, diálogo)
+│   ├── features/                   # Una carpeta por sección, cargada de forma perezosa
+│   │   ├── inicio/  nosotros/  academico/  admisiones/  servicios/  contacto/  campus/
+│   │   └── admin/                  #   login, panel, noticias-admin, certificados-admin, usuarios-admin
+│   ├── app.component.ts            # Shell: header + <router-outlet> + footer
+│   ├── app.config.ts               # Providers: router, HttpClient, Material, locale es-CO
+│   └── app.routes.ts               # Rutas con loadComponent (lazy loading)
+├── environments/                   # URL de la API por entorno
+└── styles.scss                     # Tema Material 3 + tokens de color institucionales
+```
+
+## Requisitos
+
+- Node.js 20.11+ o 22 LTS
+- Backend en ejecución (por defecto en `http://localhost:5075`)
+
+## Ejecutar
+
+```bash
+npm install
+npm start            # http://localhost:4200
+```
+
+La URL de la API se configura en `src/environments/environment.development.ts` (desarrollo)
+y `src/environments/environment.ts` (producción, `/api` bajo el mismo dominio).
+
+## Compilar y probar
+
+```bash
+npm run build        # dist/front-end-rabi-gamaliel
+npm test             # Karma + Jasmine
+```
+
+## Decisiones técnicas
+
+- **Standalone + OnPush en todos los componentes**, `inject()` en lugar de inyección por constructor,
+  `input()` basados en Signals y control flow nativo (`@if`, `@for` con `track`, `@empty`).
+- **Signals para el estado**: `NoticiasService` expone `noticias`, `total`, `cargando` y `error` como
+  Signals de solo lectura. Las peticiones usan `HttpClient` + `firstValueFrom` (cada petición emite un solo
+  valor), así que no se necesitan suscripciones, `async` pipe ni operadores de RxJS.
+- **Formularios reactivos tipados** (`NonNullableFormBuilder`). Los errores de validación del backend
+  (`ValidationProblemDetails`) se muestran junto al campo correspondiente.
+- **Lazy loading por ruta**: el bundle inicial solo contiene el shell; cada plantilla se descarga al visitarla.
+- **Accesibilidad**: enlace "Saltar al contenido", `aria-current` en la navegación, etiquetas en botones de
+  icono, `role="alert"`/`role="status"` en mensajes y respeto de `prefers-reduced-motion`.
+- **Tema**: Material 3 (`mat.theme`) ajustado con los tokens institucionales (`--jv-azul`, `--jv-amarillo`, `--jv-rojo`).
+
+## Personalización pendiente
+
+- **Escudo oficial**: copie la imagen en `public/img/escudo.png` y ponga `usarImagen = true` en
+  `src/app/shared/escudo/escudo.component.ts`.
+- **Fotos propias**: `public/img/portada.jpg` y `public/img/sede.jpg`, y defina en `styles.scss`
+  `--jv-foto-portada: url('/img/portada.jpg')` y `--jv-foto-sede: url('/img/sede.jpg')`.
+  (Las imágenes del documento de plantillas provienen de YouTube e iStock y no deben publicarse sin licencia).
+- **Documentos**: `public/docs/pei.pdf` y `public/docs/requisitos-admision.pdf`.
+- **Redes sociales**: URLs en `src/app/core/institucion.ts`.
+- **Seguridad**: el Campus Virtual sigue sin autenticación; el panel administrativo ya usa usuarios y permisos.
+
+## Panel administrativo: usuarios y permisos
+
+- Se entra por `/admin/login` (o el enlace *Acceso administrativo* del pie de página). La primera vez, sin usuarios
+  creados, la página pide la clave de administración del servidor (Render → *Environment* →
+  `Administracion__ClaveApi`) para crear el superadministrador.
+- Cada usuario tiene, por módulo, los permisos **Ver**, **Crear**, **Editar** y **Eliminar** (en certificaciones,
+  *Crear* es expedir y *Eliminar* es anular). Las rutas usan `requierePermiso('Modulo')` y los botones se muestran
+  según `SesionService.puede(modulo, accion)`; la API vuelve a validar cada acción.
+- La sesión dura 8 horas. Por defecto termina al cerrar la pestaña; con *Mantener la sesión iniciada* se conserva
+  en el equipo. Si un administrador desactiva al usuario o le restablece la contraseña, la sesión se cierra sola.
+- **Agregar un módulo nuevo**: un valor en `ModuloSistema` (API), una entrada en `MODULOS`
+  (`core/models/usuario.model.ts`) y la ruta con `canActivate: [requierePermiso('NuevoModulo')]`. Aparece solo en la
+  matriz de permisos, el panel y la barra del panel.
+
+## Certificaciones
+
+- Tipos incluidos: estudios, matrícula, conducta, paz y salvo, asistencia, mención de honor, laboral y texto libre.
+  El texto sugerido de cada tipo está en `src/app/core/models/certificado.model.ts`.
+- Los datos legales del membrete (resolución de aprobación, código DANE y NIT) se configuran en
+  `INSTITUCION.membrete` de `src/app/core/institucion.ts`; solo se imprimen si tienen valor.
+- La hoja es tamaño carta. "Imprimir / PDF" abre el diálogo del navegador, donde también se puede guardar como PDF.

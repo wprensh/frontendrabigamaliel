@@ -1,0 +1,162 @@
+mat-dialog-content {
+  display: grid;
+  gap: 1rem;
+  padding-block-start: 0.5rem;
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.interruptores {
+  display: grid;
+  gap: 0.75rem;
+
+  small {
+    display: block;
+    color: var(--rg-texto-suave);
+    font-size: 0.8rem;
+  }
+}
+
+.permisos {
+  margin: 0;
+  padding: 0.75rem 1rem 0.5rem;
+  border: 1px solid var(--rg-borde);
+  border-radius: var(--rg-radio);
+  overflow-x: auto;
+
+  legend {
+    padding-inline: 0.35rem;
+    color: var(--rg-azul);
+    font-weight: 700;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+
+  table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.2rem 0.35rem;
+    text-align: center;
+    border-block-end: 1px solid var(--rg-borde);
+  }
+
+  thead th {
+    color: var(--rg-texto-suave);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  tbody th {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-block-size: 48px;
+    text-align: start;
+    white-space: nowrap;
+
+    mat-icon {
+      color: var(--rg-azul-medio);
+    }
+  }
+
+  tbody tr:last-child :is(th, td) {
+    border-block-end: 0;
+  }
+
+  small {
+    color: var(--rg-texto-suave);
+  }
+}
+
+.nota,
+.aviso,
+.aviso-error {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.nota {
+  margin-block-start: 0.5rem;
+  color: var(--rg-texto-suave);
+}
+
+.aviso {
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--rg-radio);
+  background: #fff7d6;
+}
+
+.aviso-error {
+  color: var(--rg-rojo);
+}
+
+.perfiles {
+  margin-block: 0.75rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .nota {
+    margin: 0.2rem 0 0.5rem;
+  }
+}
+
+.opciones-perfil {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem;
+}
+
+.perfil {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--rg-borde);
+  border-radius: var(--rg-radio);
+  background: var(--rg-superficie);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  strong {
+    color: var(--rg-azul);
+  }
+
+  small {
+    color: var(--rg-texto-suave);
+    line-height: 1.3;
+  }
+
+  &:hover {
+    border-color: var(--rg-azul);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--rg-azul);
+    outline-offset: 2px;
+  }
+
+  &.activo {
+    border-color: var(--rg-azul);
+    background: #eef4fc;
+    box-shadow: inset 0 0 0 1px var(--rg-azul);
+  }
+}
